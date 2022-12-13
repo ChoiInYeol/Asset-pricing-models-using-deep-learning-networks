@@ -1,0 +1,11 @@
+#pip install -r requirements.txt
+pandas
+scikit-learn
+numpy
+matplotlib
+datetime
+finance-datareader
+tensorflow
+tensorflow_probability
+keras
+bs4
