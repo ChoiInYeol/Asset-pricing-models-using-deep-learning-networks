@@ -10,3 +10,4 @@ tensorflow_probability
 keras
 bs4
 ipykernel
+numba
