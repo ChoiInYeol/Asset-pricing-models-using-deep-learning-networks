@@ -11,3 +11,4 @@ keras
 bs4
 ipykernel
 numba
+pydot
