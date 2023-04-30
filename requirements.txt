@@ -13,3 +13,6 @@ ipykernel
 numba
 pydot
 yfinance
+statsmodels
+tables
+seaborn
