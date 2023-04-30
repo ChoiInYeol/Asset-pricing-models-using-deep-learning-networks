@@ -1,8 +1,0 @@
-capston
-results\asset_pricing\autoencoder.h5
-results\asset_pricing\data.h5
-book*
-*chrome*
-.gitignore
-results/asset_pricing/autoencoder.h5
-__pycache__/utils.cpython-38.pyc
