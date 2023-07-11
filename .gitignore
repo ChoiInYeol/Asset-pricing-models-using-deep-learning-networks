@@ -1,3 +1,8 @@
 capston
+
 book*
 *chrome*
+__pycache__
+results/asset_pricing/autoencoder.h5
+results/asset_pricing/data.h5
+*.h5
