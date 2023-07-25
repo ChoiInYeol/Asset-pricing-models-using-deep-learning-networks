@@ -1,3 +1,13 @@
+---
+papersize: a4
+mainfont: NanumMyeongjo.OTF
+margin-left: 0.5in
+margin-right: 0.5in
+margin-bottom: 0.5in
+margin-top: 0.5in
+---
+
+
 # 딥러닝 네트워크를 활용한 주식 가격 결정 모델 (Asset pricing models using deep learning networks)
 
 ![Alt text](ppt/%EB%A0%88%ED%8D%BC%EB%9F%B0%EC%8A%A4.png)
@@ -31,6 +41,24 @@ Kelly, Pruitt, and Su(2019)에서 사용되는 전통적인 instrumental beta에
 GKX(2021)는 총 94개의 자산 특성을 사용하였으나, 이 중 가장 영향력 있는 20개의 지표를 확인할 수 있었다. 이러한 지표는 모멘텀, 장단기 반전, 최근 최대 수익률, 회전율, 거래량, 시가총액 등이며, 다른 특성들은 모델에 큰 영향을 주지 못한다는 것을 보여준다. 따라서 우리는 20개의 지표를 생성하는 것을 목적으로 하되, 본 연구는 한국 시장을 분석하는 것이므로 OHLCV Data와 Metadata를 활용하여 생성할 수 있는 16개의 특성을 사용한다.
 
 ## Firm Characteristics
+
+|                                 |                                                                                                                                                 |   |
+|:-------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------:|---|
+|       Short-Term Reversal       |                                                            1-month cumulative return                                                            |   |
+|          Stock Momentum         |                                           11-month cumulative returns ending 1-month before month end                                           |   |
+|         Momentum Change         |                                        Cumulative return from months t-6 to t-1 minus months t-12 to t-7                                        |   |
+|        Industry Momentum        |                                                  Equal-weighted avg. industry 12-month returns                                                  |   |
+|        Recent Max Return        |                                                    Max daily returns from calendar month t-1                                                    |   |
+|        Long-Term Reversal       |                                                     Cumulative returns months t-36 to t-13.                                                     |   |
+|             Turnover            |                               Avg. monthly trading volume for most recent three months scaled by number of shares                               |   |
+|       Turnover Volatility       |                                                     Monthly std dev of daily share turnover                                                     |   |
+|        Log Market Equity        |                                                  Natural log of market cap at end of month t-1                                                  |   |
+|            KRW Volume           |                                        Natural log of trading volume time price per share from month t-2                                        |   |
+|        Amihud Illiquidity       |                                                 Average of daily (absolute return / KRW volume)                                                 |   |
+|          Risk Measures          |                                                  Standard dev of daily returns from month t-1.                                                  |   |
+|           Market Beta           |   Estimated market beta from weekly returns and equal weighted market returns for 3 years ending month t-1 with at least 52 weeks of returns.   |   |
+|           Beta Squared          |                                                               Market beta squared                                                               |   |
+| Idiosyncratic return volatility | Standard dev of a regression of residuals of weekly returns on the returns of an equal weighted market index returns for the prior three years. |   |
 
 ### Price Trend
 
