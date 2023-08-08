@@ -105,16 +105,16 @@ def get_train_valid_data(data, train_idx, val_idx):
 YEAR = 52
 
 cv = MultipleTimeSeriesCV(
-    n_splits=5,  # 5
-    train_period_length=15 * YEAR,
-    test_period_length=1 * YEAR,
-    lookahead=1,
+    n_splits = 5,  # 5
+    train_period_length = 10 * YEAR,
+    test_period_length = 1 * YEAR,
+    lookahead = 1,
 )
 
 factor_opts = [2, 3, 4, 5, 6]  # 2, 3, 4, 5, 6
 unit_opts = [8, 16, 32]  # 8, 16, 32
 param_grid = list(product(unit_opts, factor_opts))
-batch_size = 64
+batch_size = 256
 
 cols = [
     "units",
@@ -202,8 +202,8 @@ for units, n_factors in param_grid:
                     f"{r1.mean():6.2%} | {r1.median():6.2%}"
                 )
 
-        scores = pd.DataFrame(scores, columns=cols)
-        scores.to_hdf(results_path / "scores.h5", f"{units}/{n_factors}")
+        scores_ = pd.DataFrame(scores, columns=cols)
+        scores_.to_hdf(results_path / "scores.h5", f"{units}/{n_factors}")
 
 scores = []
 with pd.HDFStore(results_path / "scores.h5") as store:
