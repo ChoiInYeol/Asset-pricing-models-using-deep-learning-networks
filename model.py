@@ -161,6 +161,13 @@ start = time()
 for units, n_factors in param_grid:
     print("units:", units, ", n_factors:", n_factors)
     scores = []
+
+    # Check if results already exist
+    with pd.HDFStore(results_path / "scores.h5") as store:
+        if f"{units}/{n_factors}" in store:
+            print(f"Results for units {units} and n_factors {n_factors} already exist. Skipping...")
+            continue
+
     for fold, (train_idx, val_idx) in enumerate(cv.split(data)):
         X1_train, X2_train, y_train, X1_val, X2_val, y_val = get_train_valid_data(
             data, train_idx, val_idx
