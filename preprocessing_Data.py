@@ -51,7 +51,7 @@ returns = (
     .pct_change()
     .iloc[1:]
 )
-returns.info()
+
 dates = returns.index
 
 with pd.HDFStore(results_path / "autoencoder.h5") as store:
@@ -183,6 +183,7 @@ krwvol = (np.log1p(dv.rolling(21)
                   .last())
           .stack() # type: ignore
           .to_frame('krwvol'))
+krwvol.to_hdf(results_path / 'autoencoder.h5', 'factor/krwvol')
 
 #### Amihud Illiquidity
 # Average of daily (absolute return / dollar volume)
