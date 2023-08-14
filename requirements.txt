@@ -1,5 +1,5 @@
 #pip install -r requirements.txt
-pandas
+pandas=1.4
 scikit-learn
 numpy
 matplotlib
@@ -16,3 +16,4 @@ yfinance
 statsmodels
 tables
 seaborn
+alphalens

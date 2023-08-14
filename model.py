@@ -216,16 +216,12 @@ scores = []
 with pd.HDFStore(results_path / "scores.h5") as store:
     for key in store.keys():
         scores.append(store[key])
-print(scores)
 scores = pd.concat(scores)
 
-avg = (
-    scores.groupby(["n_factors", "units", "epoch"])[
-        "ic_mean", "ic_daily_mean", "ic_daily_median"
-    ]  # type: ignore
-    .mean()
-    .reset_index()
-)
+avg = (scores.groupby(['n_factors', 'units', 'epoch'])
+       [['ic_mean', 'ic_daily_mean', 'ic_daily_median']]
+       .mean()
+      .reset_index())
 
 top = (
     avg.groupby(["n_factors", "units"])
@@ -233,16 +229,13 @@ top = (
     .reset_index(-1, drop=True)
 )
 
-# 대충 좋은 에포크 찾는 코드
-print(avg.nlargest(n=50, columns=["ic_daily_median"]))
-print(top.nlargest(n=5, columns=["ic_daily_median"]))
-
 # 대충 좋은 에포크 입력하는 코드
-n_factors = int(input("n_facotrs : "))
-units = int(input("units : "))
-batch_size = 64
-first_epoch = int(input("first_epoch : "))
-last_epoch = int(input("last_epoch : "))
+n_factors = 6
+units = 8
+batch_size = 64 # 256
+first_epoch = 180
+last_epoch = 210
+
 
 predictions = []
 for epoch in tqdm(list(range(first_epoch, last_epoch))):
