@@ -1,16 +1,14 @@
----
-papersize: a4
-mainfont: NanumMyeongjo.OTF
-margin-left: 0.5in
-margin-right: 0.5in
-margin-bottom: 0.5in
-margin-top: 0.5in
----
-
-
 # 딥러닝 네트워크를 활용한 주식 가격 결정 모델 (Asset pricing models using deep learning networks)
 
 ![Alt text](ppt/%EB%A0%88%ED%8D%BC%EB%9F%B0%EC%8A%A4.png)
+
+1993~2013 학습, 2014 검증
+1994~2014 학습, 2015 검증
+1995~2015 학습, 2016 검증
+1996~2016 학습, 2017 검증
+1997~2017 학습, 2018 검증
+
+
 
 ## 개요
 
