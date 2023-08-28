@@ -17,7 +17,7 @@ with pd.HDFStore(results_path / 'autoencoder.h5') as store:
 data = (pd.read_hdf(results_path / 'autoencoder.h5', 'returns')
         .stack(dropna=False)
         .to_frame('returns') # type: ignore
-        .loc[idx['2006':, :], :])
+        .loc[idx['2000':, :], :])
 
 with pd.HDFStore(results_path / 'autoencoder.h5') as store:
     keys = [k[1:] for k in store.keys() if k[1:].startswith('factor')]
@@ -38,4 +38,5 @@ data.loc[:, characteristics] = (data.loc[:, characteristics]
 data = data.loc[idx[:'2023', :], :]
 data.loc[:, ['returns', 'returns_fwd']] = data.loc[:, ['returns', 'returns_fwd']].clip(lower=-1, upper=1.0)
 data = data.fillna(-2)
+print(data)
 data.to_hdf(results_path / 'autoencoder.h5', 'model_data')

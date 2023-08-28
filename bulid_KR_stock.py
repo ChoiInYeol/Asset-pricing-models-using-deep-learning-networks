@@ -82,5 +82,5 @@ prices_adj = prices_adj.drop(to_drop, level='ticker')
 print("Final using Stock Data :", len(prices_adj.index.unique('ticker')))
 
 # 최종 데이터셋 저장
-prices_adj.sort_index().loc[idx[:, '2000': '2023'], :].to_hdf(results_path / 'data.h5', 
+prices_adj.sort_index().loc[idx[:, '1993': '2023'], :].to_hdf(results_path / 'data.h5', 
                                                               'stocks/prices/adjusted')

@@ -104,9 +104,16 @@ def get_train_valid_data(data, train_idx, val_idx):
 
 YEAR = 52
 
+# 00~16년 학습, 2017년 테스트
+# 01~17년 학습, 2018년 테스트
+# 02~18년 학습, 2019년 테스트
+# 03~19년 학습, 2020년 테스트
+# 04~20년 학습, 2021년 테스트
+# 22년~23년 평가
+
 cv = MultipleTimeSeriesCV(
     n_splits = 5,  # 5
-    train_period_length = 10 * YEAR,
+    train_period_length = 17 * YEAR,
     test_period_length = 1 * YEAR,
     lookahead = 1,
 )
@@ -114,7 +121,7 @@ cv = MultipleTimeSeriesCV(
 factor_opts = [2, 3, 4, 5, 6]  # 2, 3, 4, 5, 6
 unit_opts = [8, 16, 32]  # 8, 16, 32
 param_grid = list(product(unit_opts, factor_opts))
-batch_size = 256
+batch_size = 16384
 
 cols = [
     "units",
@@ -175,16 +182,13 @@ for units, n_factors in param_grid:
         train_gen = DataGenerator(X1_train, X2_train, y_train, batch_size=batch_size)
         val_gen = DataGenerator(X1_val, X2_val, y_val, batch_size=batch_size)
         model = make_model(hidden_units=units, n_factors=n_factors)
+        
         for epoch in range(250):
-            model.fit_generator(
-                train_gen,
-                validation_data=val_gen,
-                epochs=epoch + 1,
-                initial_epoch=epoch,
-                verbose=False,
-                shuffle=True,
-                callbacks=ClearMemory(),
-            )
+            model.fit_generator(train_gen,
+                            validation_data=val_gen,
+                            epochs=epoch + 1,
+                            initial_epoch=epoch, verbose=False, shuffle=True, callbacks=[ClearMemory(), early_stop])
+
             y_pred = model.predict_generator(val_gen, callbacks=ClearMemory())
             y_true = y_val.stack().values
             date_index = y_val.stack().index
@@ -229,43 +233,45 @@ top = (
     .reset_index(-1, drop=True)
 )
 
-# 대충 좋은 에포크 입력하는 코드
-n_factors = 6
-units = 8
-batch_size = 64 # 256
-first_epoch = 180
-last_epoch = 210
+print(avg, top)
+
+# # 대충 좋은 에포크 입력하는 코드
+# n_factors = 6
+# units = 8
+# batch_size = 64 # 256
+# first_epoch = 180
+# last_epoch = 210
 
 
-predictions = []
-for epoch in tqdm(list(range(first_epoch, last_epoch))):
-    epoch_preds = []
-    for fold, (train_idx, val_idx) in enumerate(cv.split(data)):
-        X1_train, X2_train, y_train, X1_val, X2_val, y_val = get_train_valid_data(
-            data, train_idx, val_idx
-        )
+# predictions = []
+# for epoch in tqdm(list(range(first_epoch, last_epoch))):
+#     epoch_preds = []
+#     for fold, (train_idx, val_idx) in enumerate(cv.split(data)):
+#         X1_train, X2_train, y_train, X1_val, X2_val, y_val = get_train_valid_data(
+#             data, train_idx, val_idx
+#         )
 
-        train_gen = DataGenerator(X1_train, X2_train, y_train, batch_size=batch_size)
-        val_gen = DataGenerator(X1_val, X2_val, y_val, batch_size=batch_size)
-        model = make_model(hidden_units=units, n_factors=n_factors)
-        model.fit_generator(
-            train_gen,
-            validation_data=val_gen,
-            epochs=epoch,
-            verbose=0,
-            shuffle=True,
-            callbacks=[ClearMemory(), early_stop],
-        )
-        epoch_preds.append(
-            pd.Series(
-                model.predict_generator(
-                    val_gen, callbacks=[ClearMemory(), early_stop]
-                ).reshape(-1),
-                index=y_val.stack().index,
-            ).to_frame(epoch)
-        )
+#         train_gen = DataGenerator(X1_train, X2_train, y_train, batch_size=batch_size)
+#         val_gen = DataGenerator(X1_val, X2_val, y_val, batch_size=batch_size)
+#         model = make_model(hidden_units=units, n_factors=n_factors)
+#         model.fit_generator(
+#             train_gen,
+#             validation_data=val_gen,
+#             epochs=epoch,
+#             verbose=0,
+#             shuffle=True,
+#             callbacks=[ClearMemory(), early_stop],
+#         )
+#         epoch_preds.append(
+#             pd.Series(
+#                 model.predict_generator(
+#                     val_gen, callbacks=[ClearMemory(), early_stop]
+#                 ).reshape(-1),
+#                 index=y_val.stack().index,
+#             ).to_frame(epoch)
+#         )
 
-    predictions.append(pd.concat(epoch_preds))
+#     predictions.append(pd.concat(epoch_preds))
 
-predictions_combined = pd.concat(predictions, axis=1).sort_index()
-predictions_combined.to_hdf(results_path / "predictions.h5", "predictions")
+# predictions_combined = pd.concat(predictions, axis=1).sort_index()
+# predictions_combined.to_hdf(results_path / "predictions.h5", "predictions")
