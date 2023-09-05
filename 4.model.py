@@ -104,13 +104,6 @@ def get_train_valid_data(data, train_idx, val_idx):
 
 YEAR = 52
 
-# 00~16년 학습, 2017년 테스트
-# 01~17년 학습, 2018년 테스트
-# 02~18년 학습, 2019년 테스트
-# 03~19년 학습, 2020년 테스트
-# 04~20년 학습, 2021년 테스트
-# 22년~23년 평가
-
 cv = MultipleTimeSeriesCV(
     n_splits = 5,  # 5
     train_period_length = 17 * YEAR,
@@ -238,3 +231,42 @@ top.to_csv("train_top.csv")
 
 print("=" * 20)
 print("Training end.")
+
+n_factors = 2
+units = 8
+batch_size = 256
+first_epoch = 220
+last_epoch = 250
+
+predictions = []
+for epoch in tqdm(list(range(first_epoch, last_epoch))):
+    epoch_preds = []
+    for fold, (train_idx, val_idx) in enumerate(cv.split(data)):
+        X1_train, X2_train, y_train, X1_val, X2_val, y_val = get_train_valid_data(
+            data, train_idx, val_idx
+        )
+
+        train_gen = DataGenerator(
+            X1_train, X2_train, y_train, batch_size=batch_size)
+        val_gen = DataGenerator(X1_val, X2_val, y_val, batch_size=batch_size)
+        model.fit_generator(
+            train_gen,
+            validation_data=val_gen,
+            epochs=epoch,
+            verbose=0,
+            shuffle=True,
+            callbacks=[ClearMemory(), early_stop],
+        )
+        epoch_preds.append(
+            pd.Series(
+                model.predict_generator(
+                    val_gen, callbacks=[ClearMemory(), early_stop]
+                ).reshape(-1),
+                index=y_val.stack().index,
+            ).to_frame(epoch)
+        )
+
+    predictions.append(pd.concat(epoch_preds))
+
+predictions_combined = pd.concat(predictions, axis=1).sort_index()
+predictions_combined.to_hdf(results_path / "predictions.h5", "predictions")
