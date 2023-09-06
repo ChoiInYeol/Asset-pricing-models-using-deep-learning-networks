@@ -1,24 +1,28 @@
-title : Scientific Python QuickStart
-author: Thomas J. Sargent and John Stachurski
-logo: 'qe-logo-large.png'
+title : Implementing Autoencoder asset pricing model in korean stock market
+author: INYEOL CHOI
+logo: 'Felab_logo2.png'
 
 # Short description about the book
 description: >-
-  A brief introduction to Python programming for scientific applications.
+  Asset Pricing Model에 대한 이해와 Autoencoder를 이용한 구현
 
 execute:
-  execute_notebooks           : cache
+  execute_notebooks           : off
 
 # HTML-specific settings
 html:
+  favicon: Felab_logo.png
+  use_issues_button: true
+  use_repository_button: true
   home_page_in_navbar         : false
 
 # Interact link settings
 notebook_interface            : "notebook"
+only_build_toc_files          : true
 
 # Launch button settings
 repository:
-  url                         : https://github.com/executablebooks/quantecon-mini-example
+  url                         : https://github.com/FELAB-KHU/Asset-pricing-models-using-deep-learning-networks
   path_to_book                : "mini_book"
 
 binder:
@@ -26,8 +30,6 @@ binder:
   text                        : "Launch binder"
 
 # LaTeX settings
-bibtex_bibfiles:
-   - _bibliography/references.bib
 latex:
   latex_engine                : "xelatex"
   latex_documents:
