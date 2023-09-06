@@ -1,5 +1,2 @@
-format: jb-book
+format: jb-article
 root: intro
-chapters:
-- file: docs/markdown-example
-- file: docs/notebook-example

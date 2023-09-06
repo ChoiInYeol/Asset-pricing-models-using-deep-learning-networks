@@ -1,0 +1,28 @@
+@font-face {
+    font-family: 'Pretendard';  /* 원하는 글꼴 이름으로 변경하세요 */
+    src: url('./Pretendard-Regular.otf') format('opentype');  /* 경로와 파일 확장자에 맞게 변경하세요 */
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard';  /* 원하는 글꼴 이름으로 변경하세요 */
+    src: url('./Pretendard-Bold.otf') format('opentype');  /* 경로와 파일 확장자에 맞게 변경하세요 */
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'PretendardExtraBold';  /* 새로운 글꼴 이름으로 변경하세요 */
+    src: url('./Pretendard-ExtraBold.otf') format('opentype');  /* 경로와 파일 확장자에 맞게 변경하세요 */
+    font-weight: bold;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'PretendardExtraBold', sans-serif;
+    line-height: 1.3;  /* 제목에 대한 줄 간격 조절 */
+}
+
+body {
+    font-family: 'Pretendard', sans-serif;  /* 위에서 설정한 글꼴 이름으로 변경하세요 */
+    line-height: 1.8  /* 기본값보다 넓은 간격 */
+}

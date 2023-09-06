@@ -1,4 +1,4 @@
-title : Implementing Autoencoder asset pricing model in korean stock market
+title: Implementing Autoencoder asset pricing model in korean stock market
 author: INYEOL CHOI
 logo: 'Felab_logo2.png'
 
@@ -29,8 +29,19 @@ binder:
   binderhub_url               : "https://mybinder.org"
   text                        : "Launch binder"
 
+bibtex_bibfiles:
+  - references.bib
+
+sphinx:
+  config:
+    bibtex_reference_style: author_year
+    html_static_path:
+     - "_static"
+
+
 # LaTeX settings
 latex:
   latex_engine                : "xelatex"
   latex_documents:
     targetname: book.tex
+    
