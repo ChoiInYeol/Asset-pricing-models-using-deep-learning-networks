@@ -1,2 +1,7 @@
-format: jb-article
+format: jb-book
 root: intro
+parts:
+- caption: 이론적 배경
+  chapters:
+    - file : docs/1.basic_CAPM
+    - file : docs/2.basic_fama
