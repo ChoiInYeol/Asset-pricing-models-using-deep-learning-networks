@@ -360,7 +360,13 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conditional-autoencoder-and-ipca">Conditional Autoencoder and IPCA</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#an-empirical-study-of-us-equity">3. An empirical study of US equity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#an-empirical-study-of-us-equity">3. An empirical study of US equity</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">모델 구성</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">학습 과정</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">성능 평가</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#risk-vs-mispricing">Risk vs Mispricing</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -429,16 +435,24 @@ document.write(`
 <p>CRSP 데이터베이스를 통해 NYSE, AMEX, NASDAQ의 모든 종목에 대한 1957년 3월부터 2016년 12월까지, 즉 60년 동안의 데이터를 활용했습니다. 이 연구에서는 총 94개의 종목 특성을 조건 정보로 사용했는데, 이 중 61개의 특성은 연간 기준으로, 13개는 분기별로, 그리고 20개는 월별로 갱신되는 정보입니다. 이 94개 특성의 상세 리스트와 선택 기준은 GKX 논문에서 확인할 수 있습니다.</p>
 <p>데이터를 사용할 때 lookahead bias, 즉 미래의 정보를 미리 알고 있다는 편향을 피하기 위해, 재조정 월의 한 달 전까지의 정보만을 기반으로 데이터셋을 구성했습니다. 전체적으로 약 3만 개의 종목 데이터를 활용하였으며, 평균적으로 한 달에 6200개 이상의 종목 데이터로 모델을 구성했습니다.</p>
 <p>데이터 분할 방식은 다음과 같습니다: 1957년부터 1974년까지, 총 18년 동안의 데이터를 훈련 데이터로 사용하였고, 1975년부터 1986년까지, 즉 12년 동안의 데이터를 검증 데이터로 활용하였습니다. 마지막으로, 1987년부터 2016년까지의 10년간의 데이터를 테스트 데이터로 사용하였습니다.</p>
-<p><strong>모델 구성</strong> <br></br>
-이 연구에서는 여러 모델을 비교 분석하기 위해 PCA, IPCA, 그리고 조건부 오토인코더 4개의 모델을 사용하였습니다. 이 조건부 오토인코더 모델들은 은닉층과 뉴런의 수에 따라 다르게 구성되었습니다. 또한, 이미 잘 알려진 팩터를 기반으로 한 벤치마크 포트폴리오, 즉 Fama-French 5 팩터 모델도 함께 사용하여 성능을 비교하였습니다.</p>
-<p><strong>학습 과정</strong> <br></br>
-모델 학습에 사용된 주요 정보와 방법은 다음과 같습니다. 손실 함수로는 L2를, 정규화로는 L1을 사용하였습니다. 또한, 과적합을 방지하기 위해 Early stopping 기법을 적용하였고, 모델의 안정성을 높이기 위해 Ensemble 방식을 사용하였습니다. 최적화 알고리즘으로는 minibatch SGD를 사용하였으며, 학습 과정에서의 안정성을 위해 batch normalization도 적용하였습니다.</p>
-<p><strong>성능 평가</strong> <br></br>
-성능 평가 지표로는 KPS에서 사용한 <span class="math notranslate nohighlight">\(R^2_{total}\)</span>와 <span class="math notranslate nohighlight">\(R^2_{pred}\)</span>를 동일하게 사용하였습니다. 이러한 지표들은 모델의 예측 성능을 정량적으로 평가하기 위한 것으로, 각 지표의 정의는 본문에서 상세하게 설명되어 있습니다.</p>
-<p><strong>Risk vs Mispricing</strong> <br></br>
-이 주제는 매우 자주 논의되는 주제로, 특히 Chicago Booth 학교의 연구에서 더욱 강조되는 경향이 있습니다. 주요한 논점은 수익률의 예측 가능성이 주로 종목의 특성, 즉 위험 팩터에 의해 발생한다는 것입니다. 이를 검증하기 위해 intercept 테스트를 진행하였습니다.</p>
+<section id="id1">
+<h3>모델 구성<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<p>이 연구에서는 여러 모델을 비교 분석하기 위해 PCA, IPCA, 그리고 조건부 오토인코더 4개의 모델을 사용하였습니다. 이 조건부 오토인코더 모델들은 은닉층과 뉴런의 수에 따라 다르게 구성되었습니다. 또한, 이미 잘 알려진 팩터를 기반으로 한 벤치마크 포트폴리오, 즉 Fama-French 5 팩터 모델도 함께 사용하여 성능을 비교하였습니다.</p>
+</section>
+<section id="id2">
+<h3>학습 과정<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<p>모델 학습에 사용된 주요 정보와 방법은 다음과 같습니다. 손실 함수로는 L2를, 정규화로는 L1을 사용하였습니다. 또한, 과적합을 방지하기 위해 Early stopping 기법을 적용하였고, 모델의 안정성을 높이기 위해 Ensemble 방식을 사용하였습니다. 최적화 알고리즘으로는 minibatch SGD를 사용하였으며, 학습 과정에서의 안정성을 위해 batch normalization도 적용하였습니다.</p>
+</section>
+<section id="id3">
+<h3>성능 평가<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<p>성능 평가 지표로는 KPS에서 사용한 <span class="math notranslate nohighlight">\(R^2_{total}\)</span>와 <span class="math notranslate nohighlight">\(R^2_{pred}\)</span>를 동일하게 사용하였습니다. 이러한 지표들은 모델의 예측 성능을 정량적으로 평가하기 위한 것으로, 각 지표의 정의는 본문에서 상세하게 설명되어 있습니다.</p>
+</section>
+<section id="risk-vs-mispricing">
+<h3>Risk vs Mispricing<a class="headerlink" href="#risk-vs-mispricing" title="Permalink to this heading">#</a></h3>
+<p>이 주제는 매우 자주 논의되는 주제로, 특히 Chicago Booth 학교의 연구에서 더욱 강조되는 경향이 있습니다. 주요한 논점은 수익률의 예측 가능성이 주로 종목의 특성, 즉 위험 팩터에 의해 발생한다는 것입니다. 이를 검증하기 위해 intercept 테스트를 진행하였습니다.</p>
 <p>이 연구의 핵심은 95개의 포트폴리오 수익률을 종목 특성을 기반으로 얼마나 잘 설명하는지, 그리고 모델이 설명하지 못한 부분(잔차)의 평균이 통계적으로 0과 다른지를 검증하는 것입니다. 간단히 말하면, ‘알파’ 즉, 위험 요소를 고려하지 않고 얻을 수 있는 추가 수익률이 얼마나 있는지를 확인하는 과정입니다. 여기서 ‘알파’는 수익률의 예측에서 나타나는 오차, 즉 잔차를 의미합니다.</p>
 <p>95개의 포트폴리오 수익률과 각 모델의 예측값을 비교한 결과, 벤치마크로 설정된 Fama-French 모델에서는 37개의 경우에서 잔차가 통계적으로 유의미하게 0과 다르게 나타났습니다. 반면, 조건부 오토인코더 모델에서는 대부분 10개 미만의 경우에만 그러한 현상이 관찰되었습니다. 이를 통해 이 연구는 조건부 오토인코더 모델이 위험과 수익률 사이의 관계를 더욱 정확하게 설명한다고 주장하고 있습니다.</p>
+</section>
 </section>
 </section>
 
@@ -507,7 +521,13 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conditional-autoencoder-and-ipca">Conditional Autoencoder and IPCA</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#an-empirical-study-of-us-equity">3. An empirical study of US equity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#an-empirical-study-of-us-equity">3. An empirical study of US equity</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">모델 구성</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">학습 과정</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">성능 평가</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#risk-vs-mispricing">Risk vs Mispricing</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
