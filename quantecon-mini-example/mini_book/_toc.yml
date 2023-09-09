@@ -5,3 +5,6 @@ parts:
   chapters:
     - file : docs/1.basic_CAPM
     - file : docs/2.basic_fama
+- caption: Autoencoder Asset Pricing Model
+  chapters:
+    - file : docs/3.paper_review
