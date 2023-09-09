@@ -1,0 +1,542 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Capital Asset Pricing Model &#8212; Implementing Autoencoder asset pricing model in korean stock market</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/1.basic_CAPM';</script>
+    <link rel="shortcut icon" href="../_static/Felab_logo.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Fama-French Three-Factor Model" href="2.basic_fama.html" />
+    <link rel="prev" title="딥러닝 네트워크를 활용한 주식 가격 결정 모델 (Asset pricing models using deep learning networks)" href="../intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/Felab_logo2.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/Felab_logo2.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론적 배경</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Capital Asset Pricing Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.basic_fama.html">Fama-French Three-Factor Model</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Autoencoder Asset Pricing Model</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="3.paper_review.html">Paper Review - Autoencoder Asset Pricing Models</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/FELAB-KHU/Asset-pricing-models-using-deep-learning-networks" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/FELAB-KHU/Asset-pricing-models-using-deep-learning-networks/issues/new?title=Issue%20on%20page%20%2Fdocs/1.basic_CAPM.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/docs/1.basic_CAPM.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Capital Asset Pricing Model</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">1. <strong>Introduction</strong>:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-formula">2. <strong>The Formula</strong>:</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#e-r-i-r-f-beta-i-e-r-m-r-f"><span class="math notranslate nohighlight">\(E(R_i) = R_f + \beta_i (E(R_m) - R_f)\)</span></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conceptual-understanding">3. <strong>Conceptual Understanding</strong>:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="capital-asset-pricing-model">
+<h1>Capital Asset Pricing Model<a class="headerlink" href="#capital-asset-pricing-model" title="Permalink to this heading">#</a></h1>
+<p>논문을 읽기 전에 알아야 할 기본 지식을 짚고 넘어가도록 하겠습니다. 먼저 자산 가격 결정 모델, CAPM(Capital Asset Pricing Model)<sup><span id="id1">[<a class="reference internal" href="../intro.html#id8" title="William F. Sharpe. Capital asset prices: a theory of market equilibrium under conditions of risk. The Journal of Finance, 19(3):425–442, 1964. doi:10.1111/j.1540-6261.1964.tb02865.x.">Sharpe, 1964</a>]</span></sup>에 대해서 간단히 설명하겠습니다.</p>
+<p>CAPM은 현대 포트폴리오 이론의 창시자 Harry Max Markowitz의 제자인 William F. Sharpe가 1964년에 제시한 모델입니다. CAPM은 개별 자산의 예상 수익률을 결정하기 위한 방법으로, 시장의 위험과 개별 자산의 위험 간의 관계를 설명합니다. 이 모델은 투자자가 위험을 회피하는 경향이 있으며, 추가적인 위험을 감수하기 위해 추가적인 수익을 요구한다는 가정에 기반합니다. CAPM의 핵심 변수는 베타(<span class="math notranslate nohighlight">\(\beta\)</span>)로, 개별 자산의 수익률이 전체 시장의 수익률에 얼마나 민감하게 반응하는지를 나타냅니다.</p>
+<p><img alt="CAPM" src="../_images/CAPM-Graph.jpg" /><em><span id="id2">[<a class="reference internal" href="../intro.html#id10" title="WILL KENTON. Capital asset pricing model (capm) and assumptions explained. investopedia, 2023. URL: https://www.wallstreetprep.com/knowledge/capm-capital-asset-pricing-model/.">KENTON, 2023</a>]</span></em></p>
+<section id="introduction">
+<h2>1. <strong>Introduction</strong>:<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
+<p>CAPM은 무위험 이자율, 예상 시장 수익률, 시장 움직임에 대한 자산의 민감도(베타)를 고려하여 투자에 대한 기대 수익을 결정하는 데 사용되는 모델입니다.</p>
+</section>
+<section id="the-formula">
+<h2>2. <strong>The Formula</strong>:<a class="headerlink" href="#the-formula" title="Permalink to this heading">#</a></h2>
+<section id="e-r-i-r-f-beta-i-e-r-m-r-f">
+<h3><span class="math notranslate nohighlight">\(E(R_i) = R_f + \beta_i (E(R_m) - R_f)\)</span><a class="headerlink" href="#e-r-i-r-f-beta-i-e-r-m-r-f" title="Permalink to this heading">#</a></h3>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(E(R_i)\)</span> = Expected return on the investment (자산의 기대 수익률)</p></li>
+<li><p><span class="math notranslate nohighlight">\(R_f\)</span> = Risk-free rate (무위험 수익률, 한국에선 CD금리 또는 KOFR)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\beta_i\)</span> = Beta of the investment, which measures its sensitivity to market movements (시장 움직임에 대한 자산의 민감도)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\ E(R_m)\)</span> = Expected return of the market (시장의 기대 수익률)</p></li>
+</ul>
+</section>
+</section>
+<section id="conceptual-understanding">
+<h2>3. <strong>Conceptual Understanding</strong>:<a class="headerlink" href="#conceptual-understanding" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Risk-free rate <span class="math notranslate nohighlight">\(R_f\)</span></strong>: 현실에는 존재하지 않지만, 리스크 없이 투자하여 얻을 수 있는 가상의 수익률입니다. 무위험 수익률은 보통 국채 수익률을 사용합니다. 한국에선 CD금리 또는 KOFR을 사용합니다.</p></li>
+<li><p><strong>Market Return rate <span class="math notranslate nohighlight">\(E(R_m)\)</span></strong>: 시장 수익률은 시장 전체의 평균적인 수익률을 의미합니다. 미국에서는 보통 S&amp;P 지수를 사용하고, 한국의 경우 KOSPI 지수나 KOSPI 200을 사용하는 편입니다.</p></li>
+<li><p><strong>Beta <span class="math notranslate nohighlight">\(\beta_i\)</span></strong>: 베타는 시장 수익률 대비 자산 수익률의 변동성을 파악하는 지표입니다. 베타가 1이면 시장과 정확히 같은 변동성을 지닌다는 의미입니다. 일반적으로 ~~(항상 그런 것은 절대 아닙니다.)~~ 원자재, 식품 관련 주식은 베타가 1보다 작습니다. 반면 기술주, 바이오 관련 주식은 베타가 1보다 큽니다. 베타가 1보다 크면 시장보다 변동성이 크다는 의미이고, 1보다 작으면 시장보다 변동성이 작다는 의미입니다. 베타가 0이면 시장과 전혀 상관관계가 없다는 의미입니다.</p></li>
+<li><p><strong>Risk Premium <span class="math notranslate nohighlight">\(E(R_m) - R_f\)</span></strong>: 무위험 수익률보다 시장에 투자하는 위험을 Take함으로써 기대할 수 있는 추가 수익률을 의미합니다. 보통 리스크를 Take하면 내가 Take한 만큼의 리스크에 대한 프리미엄을 받을 수 있다고 봅니다.</p></li>
+</ul>
+<p><img alt="현대차의 베타" src="../_images/hyundai_beta.png" /><em>현대차의 베타, 네이버 금융</em></p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
+<p><span id="id3">[<a class="reference internal" href="../intro.html#id8" title="William F. Sharpe. Capital asset prices: a theory of market equilibrium under conditions of risk. The Journal of Finance, 19(3):425–442, 1964. doi:10.1111/j.1540-6261.1964.tb02865.x.">Sharpe, 1964</a>]</span>
+<span id="id4">[<a class="reference internal" href="../intro.html#id9" title="WILL KENTON. Capital asset pricing model (capm) and assumptions explained. investopedia, 2023. URL: https://www.investopedia.com/terms/c/capm.asp.">KENTON, 2023</a>]</span>
+<span id="id5">[<a class="reference internal" href="../intro.html#id10" title="WILL KENTON. Capital asset pricing model (capm) and assumptions explained. investopedia, 2023. URL: https://www.wallstreetprep.com/knowledge/capm-capital-asset-pricing-model/.">KENTON, 2023</a>]</span></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./docs"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">딥러닝 네트워크를 활용한 주식 가격 결정 모델 (Asset pricing models using deep learning networks)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="2.basic_fama.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Fama-French Three-Factor Model</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">1. <strong>Introduction</strong>:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-formula">2. <strong>The Formula</strong>:</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#e-r-i-r-f-beta-i-e-r-m-r-f"><span class="math notranslate nohighlight">\(E(R_i) = R_f + \beta_i (E(R_m) - R_f)\)</span></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conceptual-understanding">3. <strong>Conceptual Understanding</strong>:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By INYEOL CHOI
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

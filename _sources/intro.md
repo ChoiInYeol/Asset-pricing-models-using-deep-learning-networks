@@ -20,13 +20,6 @@ Kelly, Pruitt, and Su(2019)에서 사용되는 전통적인 instrumental beta에
 
 ### References
 
-{cite}`GU2021429`
-{cite}`KELLY2019501`
-{cite}`ml4t`
-
 ```{bibliography}
 ```
 
-### Code references
-[https://github.com/Stefan-jansen/machine-learning-for-trading]
-[https://github.com/syasini/Python_Generators]
