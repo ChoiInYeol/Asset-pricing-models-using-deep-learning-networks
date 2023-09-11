@@ -1,0 +1,1071 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Code Review #2 - Stock Data EDA &#8212; Implementing Autoencoder asset pricing model in korean stock market</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/5.Stock_Data_EDA';</script>
+    <link rel="shortcut icon" href="../_static/Felab_logo.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Code Review #1 - Build Stock Dataset" href="4.build_stock_dataset.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/Felab_logo2.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/Felab_logo2.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론적 배경</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1.basic_CAPM.html">Capital Asset Pricing Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.basic_fama.html">Fama-French Three-Factor Model</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Autoencoder Asset Pricing Model</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="3.paper_review.html">Paper Review - Autoencoder Asset Pricing Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4.build_stock_dataset.html">Code Review #1 - Build Stock Dataset</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Code Review #2 - Stock Data EDA</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/FELAB-KHU/Asset-pricing-models-using-deep-learning-networks" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/FELAB-KHU/Asset-pricing-models-using-deep-learning-networks/issues/new?title=Issue%20on%20page%20%2Fdocs/5.Stock_Data_EDA.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/docs/5.Stock_Data_EDA.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Code Review #2 - Stock Data EDA</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1. 데이터 불러오기</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prices-metadata">Prices, Metadata</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#select-tickers-with-metadata">Select tickers with metadata</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factor-engineering">Factor Engineering</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#price-trend">Price Trend</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#short-term-reversal">Short-Term Reversal</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#stock-momentum">Stock Momentum</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#momentum-change">Momentum Change</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#liquidity-metrics">Liquidity Metrics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#risk-measures">Risk Measures</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="code-review-2-stock-data-eda">
+<h1>Code Review #2 - Stock Data EDA<a class="headerlink" href="#code-review-2-stock-data-eda" title="Permalink to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">statsmodels.regression.rolling</span> <span class="kn">import</span> <span class="n">RollingOLS</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+<span class="n">idx</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">IndexSlice</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;whitegrid&#39;</span><span class="p">)</span>
+
+<span class="n">results_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;KR2_results&#39;</span><span class="p">,</span> <span class="s1">&#39;asset_pricing&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">results_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="n">results_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="id1">
+<h2>1. 데이터 불러오기<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
+<section id="prices-metadata">
+<h3>Prices, Metadata<a class="headerlink" href="#prices-metadata" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prices</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;data.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;stocks/prices/adjusted&#39;</span><span class="p">)</span>
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;data.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;stocks/info&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metadata</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>address1</th>
+      <th>address2</th>
+      <th>city</th>
+      <th>zip</th>
+      <th>country</th>
+      <th>phone</th>
+      <th>fax</th>
+      <th>website</th>
+      <th>industry</th>
+      <th>sector</th>
+      <th>...</th>
+      <th>freecashflow</th>
+      <th>operatingcashflow</th>
+      <th>earningsgrowth</th>
+      <th>revenuegrowth</th>
+      <th>grossmargins</th>
+      <th>ebitdamargins</th>
+      <th>operatingmargins</th>
+      <th>financialcurrency</th>
+      <th>trailingpegratio</th>
+      <th>openinterest</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>005930.KS</th>
+      <td>129 Samsung-Ro</td>
+      <td>Maetan-3dong Yeongtong-gu</td>
+      <td>Suwon-si</td>
+      <td>443-742</td>
+      <td>South Korea</td>
+      <td>82 2 2255 0114</td>
+      <td>82 3 1200 7538</td>
+      <td>https://www.samsung.com</td>
+      <td>Consumer Electronics</td>
+      <td>Technology</td>
+      <td>...</td>
+      <td>-1.345999e+13</td>
+      <td>5.205390e+13</td>
+      <td>-0.859</td>
+      <td>-0.223</td>
+      <td>0.31972</td>
+      <td>0.19889</td>
+      <td>0.06076</td>
+      <td>KRW</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>373220.KS</th>
+      <td>108, Yeoui-daero</td>
+      <td>Yeongdeungpo-Gu</td>
+      <td>Seoul</td>
+      <td>07335</td>
+      <td>South Korea</td>
+      <td>82 2 3777 1114</td>
+      <td>NaN</td>
+      <td>https://www.lgensol.com</td>
+      <td>Specialty Industrial Machinery</td>
+      <td>Industrials</td>
+      <td>...</td>
+      <td>-6.875540e+12</td>
+      <td>1.267587e+12</td>
+      <td>3.593</td>
+      <td>0.730</td>
+      <td>0.15789</td>
+      <td>0.10627</td>
+      <td>0.04871</td>
+      <td>KRW</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>000660.KS</th>
+      <td>2091 Gyeongchung-daero</td>
+      <td>Bubal-eup</td>
+      <td>Icheon-Si</td>
+      <td>NaN</td>
+      <td>South Korea</td>
+      <td>82 31 5185 4114</td>
+      <td>NaN</td>
+      <td>https://www.skhynix.com</td>
+      <td>Semiconductors</td>
+      <td>Technology</td>
+      <td>...</td>
+      <td>-8.570626e+12</td>
+      <td>4.371575e+12</td>
+      <td>NaN</td>
+      <td>-0.471</td>
+      <td>0.03433</td>
+      <td>0.23260</td>
+      <td>-0.21051</td>
+      <td>KRW</td>
+      <td>0.621</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>207940.KS</th>
+      <td>300, Songdo Bio-daero</td>
+      <td>Yeonsu-gu</td>
+      <td>Incheon</td>
+      <td>21987</td>
+      <td>South Korea</td>
+      <td>82 3 2455 3114</td>
+      <td>NaN</td>
+      <td>https://samsungbiologics.com</td>
+      <td>Biotechnology</td>
+      <td>Healthcare</td>
+      <td>...</td>
+      <td>-5.206233e+11</td>
+      <td>1.297787e+12</td>
+      <td>0.207</td>
+      <td>0.330</td>
+      <td>0.49948</td>
+      <td>0.42886</td>
+      <td>0.31606</td>
+      <td>KRW</td>
+      <td>NaN</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>005490.KS</th>
+      <td>6261, Donghaean-ro</td>
+      <td>Nam-gu</td>
+      <td>Pohang</td>
+      <td>NaN</td>
+      <td>South Korea</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>https://www.posco.com</td>
+      <td>Steel</td>
+      <td>Basic Materials</td>
+      <td>...</td>
+      <td>3.865827e+11</td>
+      <td>8.028374e+12</td>
+      <td>-0.530</td>
+      <td>-0.126</td>
+      <td>0.06718</td>
+      <td>0.07870</td>
+      <td>0.03133</td>
+      <td>KRW</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 109 columns</p>
+</div></div></div>
+</div>
+</section>
+<section id="select-tickers-with-metadata">
+<h3>Select tickers with metadata<a class="headerlink" href="#select-tickers-with-metadata" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sectors</span> <span class="o">=</span> <span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">sector</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">index</span>
+<span class="n">tickers_with_errors</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">tickers_with_metadata</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span>
+    <span class="n">metadata</span><span class="o">.</span><span class="n">sector</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">sectors</span><span class="p">)</span>
+    <span class="o">&amp;</span> <span class="n">metadata</span><span class="o">.</span><span class="n">marketcap</span><span class="o">.</span><span class="n">notnull</span><span class="p">()</span>
+    <span class="o">&amp;</span> <span class="n">metadata</span><span class="o">.</span><span class="n">sharesoutstanding</span><span class="o">.</span><span class="n">notnull</span><span class="p">()</span>
+    <span class="o">&amp;</span> <span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">sharesoutstanding</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">tickers_with_errors</span><span class="p">)</span>
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+    <span class="n">tickers_with_metadata</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;sector&quot;</span><span class="p">,</span> <span class="s2">&quot;sharesoutstanding&quot;</span><span class="p">,</span> <span class="s2">&quot;marketcap&quot;</span><span class="p">]</span>
+<span class="p">]</span>
+<span class="n">metadata</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;ticker&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if &#39;tickers_with_metadata&#39; contains valid tickers in &#39;prices&#39; DataFrame</span>
+<span class="n">valid_tickers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">prices</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s2">&quot;ticker&quot;</span><span class="p">))</span>
+<span class="n">tickers_with_metadata</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ticker</span> <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers_with_metadata</span> <span class="k">if</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">valid_tickers</span>
+<span class="p">]</span>
+
+<span class="c1"># Use .loc to select rows based on the tickers_with_metadata list</span>
+<span class="n">prices</span> <span class="o">=</span> <span class="n">prices</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">IndexSlice</span><span class="p">[</span><span class="n">tickers_with_metadata</span><span class="p">,</span> <span class="p">:],</span> <span class="p">:]</span> <span class="c1"># type: ignore</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">close</span> <span class="o">=</span> <span class="n">prices</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="s2">&quot;ticker&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+<span class="n">volume</span> <span class="o">=</span> <span class="n">prices</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="s2">&quot;ticker&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+
+<span class="n">returns</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">prices</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="s2">&quot;ticker&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">&quot;W-FRI&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">last</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">pct_change</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+<span class="p">)</span>
+
+<span class="n">dates</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">index</span>
+
+<span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s2">&quot;autoencoder.h5&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">store</span><span class="p">:</span>
+    <span class="n">store</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;close&quot;</span><span class="p">,</span> <span class="n">close</span><span class="p">)</span>
+    <span class="n">store</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">,</span> <span class="n">volume</span><span class="p">)</span>
+    <span class="n">store</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;returns&quot;</span><span class="p">,</span> <span class="n">returns</span><span class="p">)</span>
+    <span class="n">store</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;Axes: xlabel=&#39;date&#39;&gt;
+</pre></div>
+</div>
+<img alt="../_images/11383c725022fbf3019fa83592a0b3662a31f122a0b4552a4ce85298e2820f8a.png" src="../_images/11383c725022fbf3019fa83592a0b3662a31f122a0b4552a4ce85298e2820f8a.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="factor-engineering">
+<h2>Factor Engineering<a class="headerlink" href="#factor-engineering" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">MONTH</span> <span class="o">=</span> <span class="mi">21</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="price-trend">
+<h3>Price Trend<a class="headerlink" href="#price-trend" title="Permalink to this heading">#</a></h3>
+<section id="short-term-reversal">
+<h4>Short-Term Reversal<a class="headerlink" href="#short-term-reversal" title="Permalink to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1-month cumulative return</span>
+<span class="n">mom1m</span> <span class="o">=</span> <span class="n">close</span><span class="o">.</span><span class="n">pct_change</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">MONTH</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">&quot;W-FRI&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="p">()</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">&quot;mom1m&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+<span class="n">mom1m</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s2">&quot;autoencoder.h5&quot;</span><span class="p">,</span> <span class="s2">&quot;factor/mom1m&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="stock-momentum">
+<h4>Stock Momentum<a class="headerlink" href="#stock-momentum" title="Permalink to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 11-month cumulative returns ending 1-month before month end</span>
+<span class="n">mom12m</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">close</span><span class="o">.</span><span class="n">pct_change</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="mi">11</span> <span class="o">*</span> <span class="n">MONTH</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">MONTH</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">&quot;W-FRI&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">last</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">&quot;mom12m&quot;</span><span class="p">)</span>
+<span class="p">)</span>  <span class="c1"># type: ignore</span>
+<span class="n">mom12m</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/mom12m&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="momentum-change">
+<h4>Momentum Change<a class="headerlink" href="#momentum-change" title="Permalink to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cumulative return from months t-6 to t-1 minus months t-12 to t-7.</span>
+<span class="n">chmom</span> <span class="o">=</span> <span class="p">(</span><span class="n">close</span>
+         <span class="o">.</span><span class="n">pct_change</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="mi">6</span> <span class="o">*</span> <span class="n">MONTH</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">close</span><span class="o">.</span><span class="n">pct_change</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="mi">6</span> <span class="o">*</span> <span class="n">MONTH</span><span class="p">)</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="n">MONTH</span><span class="p">))</span>
+         <span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">last</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+         <span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;chmom&#39;</span><span class="p">))</span> <span class="c1"># type: ignore</span>
+<span class="n">chmom</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/chmom&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Industry Momentum</span>
+<span class="c1"># Equal-weighted avg. industry 12-month returns</span>
+<span class="n">indmom</span> <span class="o">=</span> <span class="p">(</span><span class="n">close</span><span class="o">.</span><span class="n">pct_change</span><span class="p">(</span><span class="mi">12</span><span class="o">*</span><span class="n">MONTH</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">last</span><span class="p">()</span>
+          <span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+          <span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;close&#39;</span><span class="p">)</span> <span class="c1"># type: ignore</span>
+          <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">metadata</span><span class="p">[[</span><span class="s1">&#39;sector&#39;</span><span class="p">]])</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;sector&#39;</span><span class="p">])</span>
+          <span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+          <span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;indmom&#39;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">reset_index</span><span class="p">())</span>
+<span class="n">indmom</span> <span class="o">=</span> <span class="p">(</span><span class="n">returns</span>
+          <span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+          <span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;ret&#39;</span><span class="p">)</span> <span class="c1"># type: ignore</span>
+          <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">metadata</span><span class="p">[[</span><span class="s1">&#39;sector&#39;</span><span class="p">]])</span>
+          <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+          <span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">indmom</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;ticker&#39;</span><span class="p">])</span>
+          <span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s1">&#39;indmom&#39;</span><span class="p">]])</span>
+<span class="n">indmom</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/indmom&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Recent Max Return</span>
+<span class="c1"># Max daily returns from calendar month t-1</span>
+<span class="n">maxret</span> <span class="o">=</span> <span class="p">(</span><span class="n">close</span>
+           <span class="o">.</span><span class="n">pct_change</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">MONTH</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">max</span><span class="p">()</span>
+           <span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">last</span><span class="p">()</span>
+           <span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+           <span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;maxret&#39;</span><span class="p">))</span> <span class="c1"># type: ignore</span>
+<span class="n">maxret</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/maxret&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Long-Term Reversal</span>
+<span class="c1"># Cumulative returns months t-36 to t-13.</span>
+<span class="n">mom36m</span> <span class="o">=</span> <span class="p">(</span><span class="n">close</span>
+           <span class="o">.</span><span class="n">pct_change</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="mi">24</span><span class="o">*</span><span class="n">MONTH</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">12</span><span class="o">*</span><span class="n">MONTH</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">last</span><span class="p">()</span>
+           <span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+           <span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;mom36m&#39;</span><span class="p">))</span> <span class="c1"># type: ignore</span>
+<span class="n">mom36m</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/mom36m&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="liquidity-metrics">
+<h3>Liquidity Metrics<a class="headerlink" href="#liquidity-metrics" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Turnover</span>
+<span class="c1"># Avg. monthly trading volume for most recent three months scaled by number</span>
+<span class="c1"># of shares; we are using the most recent no of shares from yahoo finance</span>
+<span class="n">turn</span> <span class="o">=</span> <span class="p">(</span><span class="n">volume</span>
+        <span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">MONTH</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">last</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">sharesoutstanding</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="s1">&#39;ticker&#39;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;turn&#39;</span><span class="p">))</span> <span class="c1"># type: ignore</span>
+<span class="n">turn</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/turn&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Turnover Volatility</span>
+<span class="c1"># onthly std dev of daily share turnover</span>
+<span class="n">turn_std</span> <span class="o">=</span> <span class="p">(</span><span class="n">prices</span>
+            <span class="o">.</span><span class="n">volume</span>
+            <span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="s1">&#39;ticker&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">sharesoutstanding</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">MONTH</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">std</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">last</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="s1">&#39;ticker&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;turn_std&#39;</span><span class="p">))</span> <span class="c1"># type: ignore</span>
+<span class="n">turn_std</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/turn_std&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Log Market Equity</span>
+<span class="c1"># Natural log of market cap at end of month t-1</span>
+<span class="n">last_price</span> <span class="o">=</span> <span class="n">close</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+<span class="n">factor</span> <span class="o">=</span> <span class="n">close</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">last_price</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">mvel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">factor</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">marketcap</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="p">())</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;mvel&#39;</span><span class="p">)</span> <span class="c1"># type: ignore</span>
+<span class="n">mvel</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/mvel&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### KRW Volume</span>
+<span class="c1"># Natural log of trading volume time price per share from month t-2</span>
+<span class="n">dv</span> <span class="o">=</span> <span class="n">close</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+<span class="n">krwvol</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">dv</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+                  <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                  <span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+                  <span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span>
+                  <span class="o">.</span><span class="n">last</span><span class="p">())</span>
+          <span class="o">.</span><span class="n">stack</span><span class="p">()</span> <span class="c1"># type: ignore</span>
+          <span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;krwvol&#39;</span><span class="p">))</span>
+<span class="n">krwvol</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/krwvol&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Amihud Illiquidity</span>
+<span class="c1"># Average of daily (absolute return / dollar volume)</span>
+<span class="n">ill</span> <span class="o">=</span> <span class="p">(</span><span class="n">close</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
+       <span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">dv</span><span class="p">)</span>
+       <span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+       <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+       <span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="p">()</span>
+       <span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+       <span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;ill&#39;</span><span class="p">))</span> <span class="c1"># type: ignore</span>
+<span class="n">ill</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/ill&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="risk-measures">
+<h3>Risk Measures<a class="headerlink" href="#risk-measures" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Return Volatility</span>
+<span class="c1"># Standard dev of daily returns from month t-1.</span>
+<span class="n">retvol</span> <span class="o">=</span> <span class="p">(</span><span class="n">close</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span>
+          <span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">std</span><span class="p">()</span>
+          <span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">last</span><span class="p">()</span>
+          <span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+          <span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;retvol&#39;</span><span class="p">))</span> <span class="c1"># type: ignore</span>
+<span class="n">retvol</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/retvol&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Market Beta</span>
+<span class="c1"># Estimated market beta from weekly returns and equal weighted market returns</span>
+<span class="c1"># for 3 years ending month t-1 with at least 52 weeks of returns.</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">close</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="p">()</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_market_beta</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">index</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">RollingOLS</span><span class="p">(</span><span class="n">endog</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> 
+                       <span class="n">exog</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">]]),</span>
+                      <span class="n">window</span><span class="o">=</span><span class="mi">3</span><span class="o">*</span><span class="mi">52</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="c1"># type: ignore</span>
+
+<span class="c1"># 20초</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">thresh</span><span class="o">=</span><span class="mi">3</span><span class="o">*</span><span class="mi">52</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">get_market_beta</span><span class="p">)</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;beta&#39;</span><span class="p">))</span> <span class="c1"># type: ignore</span>
+<span class="n">beta</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/beta&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Beta Squared</span>
+<span class="c1"># Market beta squared</span>
+<span class="n">betasq</span> <span class="o">=</span> <span class="n">beta</span><span class="o">.</span><span class="n">beta</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;betasq&#39;</span><span class="p">)</span>
+<span class="n">betasq</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/betasq&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Idiosyncratic return volatility</span>
+<span class="c1"># Standard dev of a regression of residuals of weekly returns</span>
+<span class="c1"># on the returns of an equal weighted market index returns for the prior three years.</span>
+<span class="k">def</span> <span class="nf">get_ols_residuals</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">index</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">endog</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">exog</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">]]))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">resid</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+
+<span class="c1"># 오래 걸림</span>
+<span class="n">idiovol</span> <span class="o">=</span> <span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="mi">52</span><span class="p">)</span>
+                         <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">get_ols_residuals</span><span class="p">)))</span>
+<span class="n">idiovol</span> <span class="o">=</span> <span class="n">idiovol</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;idiovol&#39;</span><span class="p">)</span> <span class="c1"># type: ignore</span>
+<span class="n">idiovol</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/idiovol&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./docs"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="4.build_stock_dataset.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Code Review #1 - Build Stock Dataset</p>
+      </div>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1. 데이터 불러오기</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prices-metadata">Prices, Metadata</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#select-tickers-with-metadata">Select tickers with metadata</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factor-engineering">Factor Engineering</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#price-trend">Price Trend</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#short-term-reversal">Short-Term Reversal</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#stock-momentum">Stock Momentum</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#momentum-change">Momentum Change</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#liquidity-metrics">Liquidity Metrics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#risk-measures">Risk Measures</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By INYEOL CHOI
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
