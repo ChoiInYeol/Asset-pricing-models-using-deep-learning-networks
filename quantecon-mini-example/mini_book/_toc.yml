@@ -1,5 +1,5 @@
 format: jb-book
-root: intro
+root: docs/0.intro
 parts:
 - caption: 이론적 배경
   chapters:
