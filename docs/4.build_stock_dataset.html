@@ -134,7 +134,7 @@ const thebe_selector_output = ".output, .cell_output"
         <div class="sidebar-primary-item">
   
 
-<a class="navbar-brand logo" href="../intro.html">
+<a class="navbar-brand logo" href="0.intro.html">
   
   
   
@@ -377,7 +377,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="code-review-1-build-stock-dataset">
 <h1>Code Review #1 - Build Stock Dataset<a class="headerlink" href="#code-review-1-build-stock-dataset" title="Permalink to this heading">#</a></h1>
-<p>이제 코드로 논문을 구현해보도록 하겠습니다. 코드는 <span id="id1">[<a class="reference internal" href="../intro.html#id7" title="Stefan Jansen. Machine Learning for Algorithmic Trading: Predictive models to extract signals from market and alternative data for systematic trading strategies with Python, 2nd Edition. Packt Publishing, 2020.">Jansen, 2020</a>]</span>에서 많이 참고하였습니다. 원본 코드를 보고 싶다면 해당 Github Repo를 참고하세요.</p>
+<p>이제 코드로 논문을 구현해보도록 하겠습니다. 코드는 <span id="id1">[<a class="reference internal" href="0.intro.html#id7" title="Stefan Jansen. Machine Learning for Algorithmic Trading: Predictive models to extract signals from market and alternative data for systematic trading strategies with Python, 2nd Edition. Packt Publishing, 2020.">Jansen, 2020</a>]</span>에서 많이 참고하였습니다. 원본 코드를 보고 싶다면 해당 Github Repo를 참고하세요.</p>
 <section id="import-libraries">
 <h2>1. Import Libraries<a class="headerlink" href="#import-libraries" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
@@ -450,9 +450,9 @@ KRX 주식 종목 수 : 1000
 </div>
 </div>
 </div>
-<p>yfinance에서 KRX Ticker를 추출하는 과정보다 FinanceDataReader 라이브러리에서 KRX Ticker를 추출하고 yfinance로 옮기는 과정이 더 쉬웠습니다. 따라서 FinanceDataReader 라이브러리를 사용해 KRX Ticker를 추출하고 yfinance로 옮기는 과정을 진행하였습니다.</p>
-<p>KRX 데이터 중에서는 코스닥과 코넥스도 포함되어 있으므로, 간단한 전처리 절차를 통해 해당 데이터를 거르고 코스피 데이터만 추출하였습니다. 초기에는 코스닥, 코넥스도 같이 포함하였으나 오히려 모델 성능이 하락하는 경향을 보이는 것을 확인하여 제외하였습니다. 이는 한국 시장의 경우 마켓에 대해 더욱 세분화된 데이터를 사용하는 것이 더 좋은 성능을 보인다고 말할 수 있습니다.</p>
-<p>원본 논문의 경우 CRSP 데이터베이스를 통해 NYSE, AMEX, NASDAQ의 모든 종목에 대한 1957년 3월부터 2016년 12월까지, 즉 60년 동안의 데이터를 활용했습니다. 한국 시장보다 역사가 길고 데이터의 양이 많은 미국 시장과 달리 한국 시장은 1990년대 중반부터 데이터가 축적되기 시작했습니다. 만약 코스닥 및 코넥스의 역사가 미국처럼 길었다면, 모델 성능 향상에 기여했을 수도 있을 것입니다.</p>
+<p>yfinance 라이브러리에서 KRX Ticker를 추출하는 과정보다 FinanceDataReader 라이브러리에서 KRX Ticker를 추출하고 yfinance로 옮기는 과정이 더 쉬웠습니다. 따라서 FinanceDataReader를 사용해 KRX Ticker를 추출하고 yfinance로 옮기는 과정을 진행하였습니다.</p>
+<p>KRX 데이터 중에서는 코스닥과 코넥스도 포함되어 있으므로, 간단한 전처리 절차를 통해 해당 데이터를 거르고 코스피 데이터만 추출하였습니다. 초기에는 코스닥, 코넥스도 같이 포함하였으나 오히려 모델 성능이 하락하는 경향을 보이는 것을 확인하여 제외하였습니다. <strong>이는 한국 시장의 경우 마켓에 대해 더욱 세분화된 데이터를 사용하는 것이 더 좋은 성능을 보인다고 말할 수 있습니다.</strong></p>
+<p>원본 논문의 경우 CRSP 데이터베이스를 통해 NYSE, AMEX, NASDAQ의 모든 종목에 대한 1957년 3월부터 2016년 12월까지, 즉 60년 동안의 데이터를 활용했습니다. 역사가 길고 데이터의 양이 많은 미국 시장과 달리 한국 시장은 1990년대 중반부터 데이터가 축적되기 시작했습니다. 만약 코스닥 및 코넥스의 역사가 미국처럼 길었다면, 모델 성능 향상에 기여했을 수도 있을 것입니다.</p>
 </section>
 <section id="id2">
 <h2>4. 주식 메타 데이터 수집<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
@@ -638,7 +638,7 @@ Final using Stock Data : 799
 <p><code class="docutils literal notranslate"><span class="pre">prices_adj</span></code> 데이터프레임에서 <code class="docutils literal notranslate"><span class="pre">close</span></code> 열만 선택하고, 이를 <code class="docutils literal notranslate"><span class="pre">ticker</span></code>를 기준으로 <code class="docutils literal notranslate"><span class="pre">unstack</span></code>하여 <code class="docutils literal notranslate"><span class="pre">df</span></code>에 저장합니다. 결과적으로 <code class="docutils literal notranslate"><span class="pre">df</span></code>는 날짜별로 각 티커의 종가를 열로 가지게 됩니다.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pct_change()</span></code> 함수로 <code class="docutils literal notranslate"><span class="pre">df</span></code>의 행간의 백분율 변화를 계산합니다. 각 티커의 최대 백분율 상승률(<code class="docutils literal notranslate"><span class="pre">pmax</span></code>)과 최대 백분율 하락률(<code class="docutils literal notranslate"><span class="pre">pmin</span></code>)을 계산합니다. 1보다 크거나 -1보다 작은 티커들을 이상치로 판단하여 제거할 목록(<code class="docutils literal notranslate"><span class="pre">to_drop</span></code>)에 추가하고 이상치로 판단된 티커의 수를 출력한 후, <code class="docutils literal notranslate"><span class="pre">to_drop</span></code> 목록에 있는 티커들을 <code class="docutils literal notranslate"><span class="pre">prices_adj</span></code> 데이터프레임에서 제거합니다.</p>
 <p>최종적으로 사용되는 티커의 수를 출력하고, <code class="docutils literal notranslate"><span class="pre">prices_adj</span></code> 데이터프레임을 인덱스를 기준으로 정렬, 2000년부터 2023년까지의 데이터만 선택하여 HDF5 형식으로 저장합니다.</p>
-<p>HDFS<sub><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_hdf.html">Hierarchical Data Format</a></sup> 형식이 궁금하다면 Pandas의 공식 문서를 참고하세요.</p>
+<p>HDFS<sup><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_hdf.html">Hierarchical Data Format</a></sup> 형식이 궁금하다면 Pandas의 공식 문서를 참고하세요.</p>
 </section>
 </section>
 

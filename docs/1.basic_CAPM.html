@@ -70,7 +70,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Fama-French Three-Factor Model" href="2.basic_fama.html" />
-    <link rel="prev" title="딥러닝 네트워크를 활용한 주식 가격 결정 모델 (Asset pricing models using deep learning networks)" href="../intro.html" />
+    <link rel="prev" title="딥러닝 네트워크를 활용한 주식 가격 결정 모델 (Asset pricing models using deep learning networks)" href="0.intro.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -136,7 +136,7 @@ const thebe_selector_output = ".output, .cell_output"
         <div class="sidebar-primary-item">
   
 
-<a class="navbar-brand logo" href="../intro.html">
+<a class="navbar-brand logo" href="0.intro.html">
   
   
   
@@ -161,7 +161,8 @@ const thebe_selector_output = ".output, .cell_output"
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Autoencoder Asset Pricing Model</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="3.paper_review.html">Paper Review - Autoencoder Asset Pricing Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4.build_stock_dataset.html">Download historical equity data for NASDAQ stocks from yahoo finance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4.build_stock_dataset.html">Code Review #1 - Build Stock Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5.Stock_Data_EDA.html">Code Review #2 - Stock Data EDA</a></li>
 </ul>
 
     </div>
@@ -375,9 +376,9 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="capital-asset-pricing-model">
 <h1>Capital Asset Pricing Model<a class="headerlink" href="#capital-asset-pricing-model" title="Permalink to this heading">#</a></h1>
-<p>논문을 읽기 전에 알아야 할 기본 지식을 짚고 넘어가도록 하겠습니다. 먼저 자산 가격 결정 모델, CAPM(Capital Asset Pricing Model)<sup><span id="id1">[<a class="reference internal" href="../intro.html#id8" title="William F. Sharpe. Capital asset prices: a theory of market equilibrium under conditions of risk. The Journal of Finance, 19(3):425–442, 1964. doi:10.1111/j.1540-6261.1964.tb02865.x.">Sharpe, 1964</a>]</span></sup>에 대해서 간단히 설명하겠습니다.</p>
+<p>논문을 읽기 전에 알아야 할 기본 지식을 짚고 넘어가도록 하겠습니다. 먼저 자산 가격 결정 모델, CAPM(Capital Asset Pricing Model)<sup><span id="id1">[<a class="reference internal" href="0.intro.html#id8" title="William F. Sharpe. Capital asset prices: a theory of market equilibrium under conditions of risk. The Journal of Finance, 19(3):425–442, 1964. doi:10.1111/j.1540-6261.1964.tb02865.x.">Sharpe, 1964</a>]</span></sup>에 대해서 간단히 설명하겠습니다.</p>
 <p>CAPM은 현대 포트폴리오 이론의 창시자 Harry Max Markowitz의 제자인 William F. Sharpe가 1964년에 제시한 모델입니다. CAPM은 개별 자산의 예상 수익률을 결정하기 위한 방법으로, 시장의 위험과 개별 자산의 위험 간의 관계를 설명합니다. 이 모델은 투자자가 위험을 회피하는 경향이 있으며, 추가적인 위험을 감수하기 위해 추가적인 수익을 요구한다는 가정에 기반합니다. CAPM의 핵심 변수는 베타(<span class="math notranslate nohighlight">\(\beta\)</span>)로, 개별 자산의 수익률이 전체 시장의 수익률에 얼마나 민감하게 반응하는지를 나타냅니다.</p>
-<p><img alt="CAPM" src="../_images/CAPM-Graph.jpg" /><em><span id="id2">[<a class="reference internal" href="../intro.html#id10" title="WILL KENTON. Capital asset pricing model (capm) and assumptions explained. investopedia, 2023. URL: https://www.wallstreetprep.com/knowledge/capm-capital-asset-pricing-model/.">KENTON, 2023</a>]</span></em></p>
+<p><img alt="CAPM" src="../_images/CAPM-Graph.jpg" /><em><span id="id2">[<a class="reference internal" href="0.intro.html#id10" title="WILL KENTON. Capital asset pricing model (capm) and assumptions explained. investopedia, 2023. URL: https://www.wallstreetprep.com/knowledge/capm-capital-asset-pricing-model/.">KENTON, 2023</a>]</span></em></p>
 <section id="introduction">
 <h2>1. <strong>Introduction</strong>:<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
 <p>CAPM은 무위험 이자율, 예상 시장 수익률, 시장 움직임에 대한 자산의 민감도(베타)를 고려하여 투자에 대한 기대 수익을 결정하는 데 사용되는 모델입니다.</p>
@@ -407,9 +408,9 @@ document.write(`
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
-<p><span id="id3">[<a class="reference internal" href="../intro.html#id8" title="William F. Sharpe. Capital asset prices: a theory of market equilibrium under conditions of risk. The Journal of Finance, 19(3):425–442, 1964. doi:10.1111/j.1540-6261.1964.tb02865.x.">Sharpe, 1964</a>]</span>
-<span id="id4">[<a class="reference internal" href="../intro.html#id9" title="WILL KENTON. Capital asset pricing model (capm) and assumptions explained. investopedia, 2023. URL: https://www.investopedia.com/terms/c/capm.asp.">KENTON, 2023</a>]</span>
-<span id="id5">[<a class="reference internal" href="../intro.html#id10" title="WILL KENTON. Capital asset pricing model (capm) and assumptions explained. investopedia, 2023. URL: https://www.wallstreetprep.com/knowledge/capm-capital-asset-pricing-model/.">KENTON, 2023</a>]</span></p>
+<p><span id="id3">[<a class="reference internal" href="0.intro.html#id8" title="William F. Sharpe. Capital asset prices: a theory of market equilibrium under conditions of risk. The Journal of Finance, 19(3):425–442, 1964. doi:10.1111/j.1540-6261.1964.tb02865.x.">Sharpe, 1964</a>]</span>
+<span id="id4">[<a class="reference internal" href="0.intro.html#id9" title="WILL KENTON. Capital asset pricing model (capm) and assumptions explained. investopedia, 2023. URL: https://www.investopedia.com/terms/c/capm.asp.">KENTON, 2023</a>]</span>
+<span id="id5">[<a class="reference internal" href="0.intro.html#id10" title="WILL KENTON. Capital asset pricing model (capm) and assumptions explained. investopedia, 2023. URL: https://www.wallstreetprep.com/knowledge/capm-capital-asset-pricing-model/.">KENTON, 2023</a>]</span></p>
 </section>
 </section>
 
@@ -445,7 +446,7 @@ document.write(`
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../intro.html"
+       href="0.intro.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
