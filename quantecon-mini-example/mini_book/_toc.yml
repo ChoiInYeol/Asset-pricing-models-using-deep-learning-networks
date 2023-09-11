@@ -8,3 +8,4 @@ parts:
 - caption: Autoencoder Asset Pricing Model
   chapters:
     - file : docs/3.paper_review
+    - file : docs/4.build_stock_dataset
