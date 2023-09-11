@@ -1,0 +1,764 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Code Review #1 - Build Stock Dataset &#8212; Implementing Autoencoder asset pricing model in korean stock market</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/4.build_stock_dataset';</script>
+    <link rel="shortcut icon" href="../_static/Felab_logo.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Paper Review - Autoencoder Asset Pricing Models" href="3.paper_review.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/Felab_logo2.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/Felab_logo2.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론적 배경</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1.basic_CAPM.html">Capital Asset Pricing Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.basic_fama.html">Fama-French Three-Factor Model</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Autoencoder Asset Pricing Model</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="3.paper_review.html">Paper Review - Autoencoder Asset Pricing Models</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Code Review #1 - Build Stock Dataset</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/FELAB-KHU/Asset-pricing-models-using-deep-learning-networks" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/FELAB-KHU/Asset-pricing-models-using-deep-learning-networks/issues/new?title=Issue%20on%20page%20%2Fdocs/4.build_stock_dataset.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/docs/4.build_stock_dataset.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Code Review #1 - Build Stock Dataset</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-libraries">1. Import Libraries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-functions">2. Define Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#krx">3. KRX 종목코드 가져오기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">4. 주식 메타 데이터 수집</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">일반적인 방법</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">병렬로 다운로드 해보기</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ohlcv">5. 주식 OHLCV 데이터 수집</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">6. 이상치 제거</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="code-review-1-build-stock-dataset">
+<h1>Code Review #1 - Build Stock Dataset<a class="headerlink" href="#code-review-1-build-stock-dataset" title="Permalink to this heading">#</a></h1>
+<p>이제 코드로 논문을 구현해보도록 하겠습니다. 코드는 <span id="id1">[<a class="reference internal" href="../intro.html#id7" title="Stefan Jansen. Machine Learning for Algorithmic Trading: Predictive models to extract signals from market and alternative data for systematic trading strategies with Python, 2nd Edition. Packt Publishing, 2020.">Jansen, 2020</a>]</span>에서 많이 참고하였습니다. 원본 코드를 보고 싶다면 해당 Github Repo를 참고하세요.</p>
+<section id="import-libraries">
+<h2>1. Import Libraries<a class="headerlink" href="#import-libraries" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">FinanceDataReader</span> <span class="k">as</span> <span class="nn">fdr</span>
+<span class="kn">import</span> <span class="nn">yfinance</span> <span class="k">as</span> <span class="nn">yf</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="define-functions">
+<h2>2. Define Functions<a class="headerlink" href="#define-functions" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">chunks</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span> 
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">),</span> <span class="n">n</span><span class="p">):</span>  
+        <span class="k">yield</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span> 
+
+<span class="k">def</span> <span class="nf">format_time</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a formatted time string &#39;HH:MM:SS</span>
+<span class="sd">    based on a numeric time() value&quot;&quot;&quot;</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">h</span><span class="si">:</span><span class="s1">0&gt;2.0f</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">m</span><span class="si">:</span><span class="s1">0&gt;2.0f</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">s</span><span class="si">:</span><span class="s1">0&gt;2.0f</span><span class="si">}</span><span class="s1">&#39;</span>
+
+
+<span class="n">results_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;KR2_results&#39;</span><span class="p">,</span> <span class="s1">&#39;asset_pricing&#39;</span><span class="p">)</span> <span class="c1"># 경로 설정</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">results_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="n">results_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">chunks</span></code> 함수는 리스트를 <code class="docutils literal notranslate"><span class="pre">n</span></code>개씩 나누어주는 함수입니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">format_time</span></code> 함수는 시간을 시, 분, 초로 나누어주는 함수입니다.</p></li>
+<li><p>데이터를 다운로드 받을 경로를 설정해줍니다. <strong>이 경로는 나중에도 계속 사용되므로 변경되지 않습니다.</strong></p></li>
+</ul>
+</section>
+<section id="krx">
+<h2>3. KRX 종목코드 가져오기<a class="headerlink" href="#krx" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">krx</span> <span class="o">=</span> <span class="n">fdr</span><span class="o">.</span><span class="n">StockListing</span><span class="p">(</span><span class="s1">&#39;KRX&#39;</span><span class="p">)</span>
+<span class="n">krx</span> <span class="o">=</span> <span class="n">krx</span><span class="p">[</span><span class="n">krx</span><span class="p">[</span><span class="s2">&quot;Market&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;KONEX&quot;</span><span class="p">]</span>
+<span class="n">krx</span> <span class="o">=</span> <span class="n">krx</span><span class="p">[</span><span class="n">krx</span><span class="p">[</span><span class="s2">&quot;Market&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;KOSDAQ&quot;</span><span class="p">]</span>
+<span class="n">krx</span><span class="p">[</span><span class="s1">&#39;Code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">krx</span><span class="p">[</span><span class="s1">&#39;Code&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">krx</span><span class="p">[</span><span class="s1">&#39;Market&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;KS&#39;</span><span class="p">)</span>
+<span class="n">krx</span> <span class="o">=</span> <span class="n">krx</span><span class="p">[</span><span class="s2">&quot;Code&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">krx</span><span class="p">)</span>
+<span class="n">yf_codes</span> <span class="o">=</span> <span class="n">yf</span><span class="o">.</span><span class="n">Tickers</span><span class="p">(</span><span class="n">krx</span><span class="p">)</span>
+
+<span class="c1"># 출력 예시</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">yf_codes</span><span class="o">.</span><span class="n">tickers</span><span class="p">)[:</span><span class="mi">5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;KRX 주식 종목 수 :&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">yf_codes</span><span class="o">.</span><span class="n">tickers</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;005930.KS&#39;, &#39;373220.KS&#39;, &#39;000660.KS&#39;, &#39;207940.KS&#39;, &#39;005490.KS&#39;]
+KRX 주식 종목 수 : 1000
+</pre></div>
+</div>
+</div>
+</div>
+<p>yfinance에서 KRX Ticker를 추출하는 과정보다 FinanceDataReader 라이브러리에서 KRX Ticker를 추출하고 yfinance로 옮기는 과정이 더 쉬웠습니다. 따라서 FinanceDataReader 라이브러리를 사용해 KRX Ticker를 추출하고 yfinance로 옮기는 과정을 진행하였습니다.</p>
+<p>KRX 데이터 중에서는 코스닥과 코넥스도 포함되어 있으므로, 간단한 전처리 절차를 통해 해당 데이터를 거르고 코스피 데이터만 추출하였습니다. 초기에는 코스닥, 코넥스도 같이 포함하였으나 오히려 모델 성능이 하락하는 경향을 보이는 것을 확인하여 제외하였습니다. 이는 한국 시장의 경우 마켓에 대해 더욱 세분화된 데이터를 사용하는 것이 더 좋은 성능을 보인다고 말할 수 있습니다.</p>
+<p>원본 논문의 경우 CRSP 데이터베이스를 통해 NYSE, AMEX, NASDAQ의 모든 종목에 대한 1957년 3월부터 2016년 12월까지, 즉 60년 동안의 데이터를 활용했습니다. 한국 시장보다 역사가 길고 데이터의 양이 많은 미국 시장과 달리 한국 시장은 1990년대 중반부터 데이터가 축적되기 시작했습니다. 만약 코스닥 및 코넥스의 역사가 미국처럼 길었다면, 모델 성능 향상에 기여했을 수도 있을 것입니다.</p>
+</section>
+<section id="id2">
+<h2>4. 주식 메타 데이터 수집<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<section id="id3">
+<h3>일반적인 방법<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">meta_data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">code</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">krx</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">yf_object</span> <span class="o">=</span> <span class="n">yf</span><span class="o">.</span><span class="n">Ticker</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">yf_object</span><span class="o">.</span><span class="n">get_info</span><span class="p">())</span>
+        <span class="n">meta_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">meta_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+<span class="c1"># 다운로드 받을 주식 데이터의 메타 정보 저장</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;data.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;stocks/info&#39;</span><span class="p">)</span>
+
+<span class="c1"># 다운로드 받은 주식 데이터의 메타 정보 불러오기</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;다운로드한 메타데이터의 수 : &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 1000/1000 [09:24&lt;00:00,  1.77it/s]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id4">
+<h3>병렬로 다운로드 해보기<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span>
+
+<span class="k">def</span> <span class="nf">fetch_data</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">yf_object</span> <span class="o">=</span> <span class="n">yf</span><span class="o">.</span><span class="n">Ticker</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">yf_object</span><span class="o">.</span><span class="n">get_info</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<span class="n">meta_data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tqdm</span><span class="p">(</span><span class="n">executor</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">fetch_data</span><span class="p">,</span> <span class="n">krx</span><span class="p">),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">krx</span><span class="p">)))</span>
+
+<span class="c1"># filter out None results</span>
+<span class="n">meta_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">res</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">meta_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+<span class="c1"># Save the stock data</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;data.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;stocks/info&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;병렬로 다운로드한 메타데이터의 수 : &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>병렬로 다운로드한 메타데이터의 수 :  959
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="ohlcv">
+<h2>5. 주식 OHLCV 데이터 수집<a class="headerlink" href="#ohlcv" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prices_adj</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chunks</span><span class="p">(</span><span class="n">krx</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">prices_adj</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">yf</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">auto_adjust</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">per_ticker</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">to_do</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">to_go</span> <span class="o">=</span> <span class="n">to_do</span> <span class="o">*</span> <span class="n">per_ticker</span>    
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Success: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">prices_adj</span><span class="p">)</span><span class="si">:</span><span class="s1">5,.0f</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s1">5,.0f</span><span class="si">}</span><span class="s1"> | To go: </span><span class="si">{</span><span class="n">format_time</span><span class="p">(</span><span class="n">to_go</span><span class="p">)</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">to_do</span><span class="si">:</span><span class="s1">5,.0f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+
+<span class="n">prices_adj</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">prices_adj</span><span class="p">)</span>
+              <span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+              <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">)</span>
+              <span class="o">.</span><span class="n">swaplevel</span><span class="p">())</span>
+
+<span class="n">prices_adj</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ticker&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="o">*********************</span><span class="mi">100</span><span class="o">%***********************</span><span class="p">]</span>  <span class="mi">100</span> <span class="n">of</span> <span class="mi">100</span> <span class="n">completed</span>
+<span class="mi">6</span> <span class="n">Failed</span> <span class="n">downloads</span><span class="p">:</span>
+<span class="p">[</span><span class="s1">&#39;091990.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;066970.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;035900.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;263750.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;022100.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;247540.KS&#39;</span><span class="p">]:</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;%ticker%: No timezone found, symbol may be delisted&#39;</span><span class="p">)</span>
+
+<span class="n">Success</span><span class="p">:</span>     <span class="mi">1</span><span class="o">/</span>    <span class="mi">1</span> <span class="o">|</span> <span class="n">To</span> <span class="n">go</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">33</span> <span class="p">(</span>  <span class="mi">900</span><span class="p">)</span>
+<span class="p">[</span><span class="o">*********************</span><span class="mi">100</span><span class="o">%***********************</span><span class="p">]</span>  <span class="mi">100</span> <span class="n">of</span> <span class="mi">100</span> <span class="n">completed</span>
+<span class="mi">14</span> <span class="n">Failed</span> <span class="n">downloads</span><span class="p">:</span>
+<span class="p">[</span><span class="s1">&#39;137400.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;145020.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;039030.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;293490.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;214450.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;036930.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;278280.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;237690.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;196170.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;214150.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;035760.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;067310.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;058470.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;240810.KS&#39;</span><span class="p">]:</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;%ticker%: No timezone found, symbol may be delisted&#39;</span><span class="p">)</span>
+
+<span class="n">Success</span><span class="p">:</span>     <span class="mi">2</span><span class="o">/</span>    <span class="mi">2</span> <span class="o">|</span> <span class="n">To</span> <span class="n">go</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">28</span> <span class="p">(</span>  <span class="mi">800</span><span class="p">)</span>
+<span class="p">[</span><span class="o">*********************</span><span class="mi">100</span><span class="o">%***********************</span><span class="p">]</span>  <span class="mi">100</span> <span class="n">of</span> <span class="mi">100</span> <span class="n">completed</span>
+<span class="mi">15</span> <span class="n">Failed</span> <span class="n">downloads</span><span class="p">:</span>
+<span class="p">[</span><span class="s1">&#39;141080.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;166090.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;056190.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;195940.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;086450.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;098460.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;348210.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;272290.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;036830.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;003380.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;213420.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;074600.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;084370.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;215200.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;046890.KS&#39;</span><span class="p">]:</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;%ticker%: No timezone found, symbol may be delisted&#39;</span><span class="p">)</span>
+
+<span class="n">Success</span><span class="p">:</span>     <span class="mi">3</span><span class="o">/</span>    <span class="mi">3</span> <span class="o">|</span> <span class="n">To</span> <span class="n">go</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">24</span> <span class="p">(</span>  <span class="mi">700</span><span class="p">)</span>
+<span class="p">[</span><span class="o">*********************</span><span class="mi">100</span><span class="o">%***********************</span><span class="p">]</span>  <span class="mi">100</span> <span class="n">of</span> <span class="mi">100</span> <span class="n">completed</span>
+<span class="mi">9</span> <span class="n">Failed</span> <span class="n">downloads</span><span class="p">:</span>
+<span class="p">[</span><span class="s1">&#39;084850.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;131290.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;215000.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;243070.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;319660.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;095610.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;091700.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;183300.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;230360.KS&#39;</span><span class="p">]:</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;%ticker%: No timezone found, symbol may be delisted&#39;</span><span class="p">)</span>
+
+<span class="n">Success</span><span class="p">:</span>     <span class="mi">4</span><span class="o">/</span>    <span class="mi">4</span> <span class="o">|</span> <span class="n">To</span> <span class="n">go</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">21</span> <span class="p">(</span>  <span class="mi">600</span><span class="p">)</span>
+<span class="p">[</span><span class="o">*********************</span><span class="mi">100</span><span class="o">%***********************</span><span class="p">]</span>  <span class="mi">100</span> <span class="n">of</span> <span class="mi">100</span> <span class="n">completed</span>
+<span class="mi">2</span> <span class="n">Failed</span> <span class="n">downloads</span><span class="p">:</span>
+<span class="p">[</span><span class="s1">&#39;267980.KS&#39;</span><span class="p">,</span> <span class="s1">&#39;060250.KS&#39;</span><span class="p">]:</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;%ticker%: No timezone found, symbol may be delisted&#39;</span><span class="p">)</span>
+
+<span class="n">Success</span><span class="p">:</span>     <span class="mi">5</span><span class="o">/</span>    <span class="mi">5</span> <span class="o">|</span> <span class="n">To</span> <span class="n">go</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">18</span> <span class="p">(</span>  <span class="mi">500</span><span class="p">)</span>
+<span class="p">[</span><span class="o">*********************</span><span class="mi">100</span><span class="o">%***********************</span><span class="p">]</span>  <span class="mi">100</span> <span class="n">of</span> <span class="mi">100</span> <span class="n">completed</span>
+<span class="n">Success</span><span class="p">:</span>     <span class="mi">6</span><span class="o">/</span>    <span class="mi">6</span> <span class="o">|</span> <span class="n">To</span> <span class="n">go</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">14</span> <span class="p">(</span>  <span class="mi">400</span><span class="p">)</span>
+<span class="p">[</span><span class="o">*********************</span><span class="mi">100</span><span class="o">%***********************</span><span class="p">]</span>  <span class="mi">100</span> <span class="n">of</span> <span class="mi">100</span> <span class="n">completed</span>
+<span class="n">Success</span><span class="p">:</span>     <span class="mi">7</span><span class="o">/</span>    <span class="mi">7</span> <span class="o">|</span> <span class="n">To</span> <span class="n">go</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">11</span> <span class="p">(</span>  <span class="mi">300</span><span class="p">)</span>
+<span class="p">[</span><span class="o">*********************</span><span class="mi">100</span><span class="o">%***********************</span><span class="p">]</span>  <span class="mi">100</span> <span class="n">of</span> <span class="mi">100</span> <span class="n">completed</span>
+<span class="n">Success</span><span class="p">:</span>     <span class="mi">8</span><span class="o">/</span>    <span class="mi">8</span> <span class="o">|</span> <span class="n">To</span> <span class="n">go</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">07</span> <span class="p">(</span>  <span class="mi">200</span><span class="p">)</span>
+<span class="p">[</span><span class="o">*********************</span><span class="mi">100</span><span class="o">%***********************</span><span class="p">]</span>  <span class="mi">100</span> <span class="n">of</span> <span class="mi">100</span> <span class="n">completed</span>
+<span class="n">Success</span><span class="p">:</span>     <span class="mi">9</span><span class="o">/</span>    <span class="mi">9</span> <span class="o">|</span> <span class="n">To</span> <span class="n">go</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">04</span> <span class="p">(</span>  <span class="mi">100</span><span class="p">)</span>
+<span class="p">[</span><span class="o">*********************</span><span class="mi">100</span><span class="o">%***********************</span><span class="p">]</span>  <span class="mi">100</span> <span class="n">of</span> <span class="mi">100</span> <span class="n">completed</span>
+<span class="n">Success</span><span class="p">:</span>    <span class="mi">10</span><span class="o">/</span>   <span class="mi">10</span> <span class="o">|</span> <span class="n">To</span> <span class="n">go</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="p">(</span>    <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>각 시세 청크에 대해 주식 데이터는 야후 파이낸스의 <code class="docutils literal notranslate"><span class="pre">yf.download</span></code> 메서드를 사용하여 다운로드됩니다. <code class="docutils literal notranslate"><span class="pre">period='max'</span></code> 인수는 사용 가능한 최대 기록 데이터를 다운로드하는 것을 나타냅니다. <code class="docutils literal notranslate"><span class="pre">auto_adjust=True</span></code> 인수는 조정된 가격(분할, 배당금 등에 따라 조정된 가격)을 가져오는 데 사용됩니다. 그런 다음 결과 데이터프레임이 마지막 레벨에 “스택”됩니다(즉, 열이 행으로 변환됨).</p>
+<p>모든 데이터가 다운로드되어 <code class="docutils literal notranslate"><span class="pre">prices_adj</span></code> 목록에 저장되면 다음 작업이 수행됩니다:</p>
+<ul class="simple">
+<li><p>가격 조정` 목록의 모든 데이터 청크가 단일 데이터 프레임으로 연결됩니다.</p></li>
+<li><p>모든 <code class="docutils literal notranslate"><span class="pre">NaN</span></code> 값을 가진 열(ticker)이 제거됩니다.</p></li>
+<li><p>열 이름은 소문자로 변환됩니다.</p></li>
+<li><p>다중 인덱스의 레벨이 바뀝니다.</p></li>
+<li><p>인덱스 이름은 <code class="docutils literal notranslate"><span class="pre">ticker</span></code> 및 <code class="docutils literal notranslate"><span class="pre">date</span></code>로 설정됩니다.</p></li>
+</ul>
+<p>결과 <code class="docutils literal notranslate"><span class="pre">prices_adj</span></code> 데이터 프레임은 주식 시세를 첫 번째 인덱스 수준으로, 날짜를 두 번째 인덱스 수준으로, 다양한 주식 속성(예: ‘시가’, ‘종가’, ‘고가’, ‘저가’ 등)을 나타내는 열을 모두 소문자로 갖게 됩니다.</p>
+</section>
+<section id="id5">
+<h2>6. 이상치 제거<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 이상치 제거</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">prices_adj</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="s1">&#39;ticker&#39;</span><span class="p">)</span>
+<span class="n">pmax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="n">pmin</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<span class="n">to_drop</span> <span class="o">=</span> <span class="n">pmax</span><span class="p">[</span><span class="n">pmax</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">pmin</span><span class="p">[</span><span class="n">pmin</span><span class="o">&lt;-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Outliers :&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">to_drop</span><span class="p">))</span>
+
+<span class="n">prices_adj</span> <span class="o">=</span> <span class="n">prices_adj</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">to_drop</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s1">&#39;ticker&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final using Stock Data :&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">prices_adj</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="s1">&#39;ticker&#39;</span><span class="p">)))</span>
+
+<span class="c1"># 최종 데이터셋 저장</span>
+<span class="n">idx</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">IndexSlice</span>
+<span class="n">prices_adj</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">[:,</span> <span class="s1">&#39;2000&#39;</span><span class="p">:</span> <span class="s1">&#39;2023&#39;</span><span class="p">],</span> <span class="p">:]</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;data.h5&#39;</span><span class="p">,</span> 
+                                                              <span class="s1">&#39;stocks/prices/adjusted&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Outliers : 155
+Final using Stock Data : 799
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">prices_adj</span></code> 데이터프레임에서 <code class="docutils literal notranslate"><span class="pre">close</span></code> 열만 선택하고, 이를 <code class="docutils literal notranslate"><span class="pre">ticker</span></code>를 기준으로 <code class="docutils literal notranslate"><span class="pre">unstack</span></code>하여 <code class="docutils literal notranslate"><span class="pre">df</span></code>에 저장합니다. 결과적으로 <code class="docutils literal notranslate"><span class="pre">df</span></code>는 날짜별로 각 티커의 종가를 열로 가지게 됩니다.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pct_change()</span></code> 함수로 <code class="docutils literal notranslate"><span class="pre">df</span></code>의 행간의 백분율 변화를 계산합니다. 각 티커의 최대 백분율 상승률(<code class="docutils literal notranslate"><span class="pre">pmax</span></code>)과 최대 백분율 하락률(<code class="docutils literal notranslate"><span class="pre">pmin</span></code>)을 계산합니다. 1보다 크거나 -1보다 작은 티커들을 이상치로 판단하여 제거할 목록(<code class="docutils literal notranslate"><span class="pre">to_drop</span></code>)에 추가하고 이상치로 판단된 티커의 수를 출력한 후, <code class="docutils literal notranslate"><span class="pre">to_drop</span></code> 목록에 있는 티커들을 <code class="docutils literal notranslate"><span class="pre">prices_adj</span></code> 데이터프레임에서 제거합니다.</p>
+<p>최종적으로 사용되는 티커의 수를 출력하고, <code class="docutils literal notranslate"><span class="pre">prices_adj</span></code> 데이터프레임을 인덱스를 기준으로 정렬, 2000년부터 2023년까지의 데이터만 선택하여 HDF5 형식으로 저장합니다.</p>
+<p>HDFS<sub><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_hdf.html">Hierarchical Data Format</a></sup> 형식이 궁금하다면 Pandas의 공식 문서를 참고하세요.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./docs"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="3.paper_review.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Paper Review - Autoencoder Asset Pricing Models</p>
+      </div>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-libraries">1. Import Libraries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-functions">2. Define Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#krx">3. KRX 종목코드 가져오기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">4. 주식 메타 데이터 수집</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">일반적인 방법</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">병렬로 다운로드 해보기</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ohlcv">5. 주식 OHLCV 데이터 수집</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">6. 이상치 제거</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By INYEOL CHOI
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
