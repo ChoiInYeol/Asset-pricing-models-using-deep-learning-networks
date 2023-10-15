@@ -10,3 +10,4 @@ parts:
     - file : docs/3.paper_review
     - file : docs/4.build_stock_dataset
     - file : docs/5.Stock_Data_EDA
+    - file : docs/6.Modeling
