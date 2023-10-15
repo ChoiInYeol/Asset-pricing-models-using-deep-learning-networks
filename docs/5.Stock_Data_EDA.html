@@ -363,10 +363,26 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#short-term-reversal">Short-Term Reversal</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#stock-momentum">Stock Momentum</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#momentum-change">Momentum Change</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#industry-momentum">Industry Momentum</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#recent-max-return">Recent Max Return</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#long-term-reversal">Long-Term Reversal</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#liquidity-metrics">Liquidity Metrics</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#risk-measures">Risk Measures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#liquidity-metrics">Liquidity Metrics</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#turnover">Turnover</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#turnover-volatility">Turnover Volatility</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#log-market-equity">Log Market Equity</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#krw-volume">KRW Volume</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#amihud-illiquidity">Amihud Illiquidity</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#risk-measures">Risk Measures</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#return-volatility">Return Volatility</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#market-beta">Market Beta</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#beta-squared">Beta Squared</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#idiosyncratic-return-volatility">Idiosyncratic return volatility</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -751,10 +767,12 @@ document.write(`
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">Momentum</span> <span class="pre">Change</span></code>은 주식의 가격 변동성과 기존의 모멘텀을 결합하여 중간기간의 주식 가격의 변화를 측정하는 방법입니다. 이 전략은 <code class="docutils literal notranslate"><span class="pre">Cumulative</span> <span class="pre">return</span> <span class="pre">from</span> <span class="pre">months</span> <span class="pre">t-6</span> <span class="pre">to</span> <span class="pre">t-1</span> <span class="pre">minus</span> <span class="pre">months</span> <span class="pre">t-12</span> <span class="pre">to</span> <span class="pre">t-7</span></code>을 사용하여 주식의 모멘텀의 변화를 측정합니다. 이 계산을 통해 최근의 가격 변화가 지난 몇 개월 동안의 추세에 비해 어떻게 변화하고 있는지를 파악하게 됩니다.</p>
 <p>예를 들어, 최근 6개월 동안의 누적 수익률이 높고 그 이전의 6개월 동안의 누적 수익률이 낮을 경우, 이는 주식의 모멘텀이 증가하고 있다는 신호로 해석될 수 있습니다. 반대로, 최근 6개월 동안의 누적 수익률이 낮고 그 이전의 6개월 동안의 누적 수익률이 높을 경우, 이는 모멘텀이 감소하고 있다는 신호로 해석될 수 있습니다. 이러한 정보를 바탕으로 투자자는 주식을 매수 또는 매도하는 결정을 내릴 수 있으며, 이런 방식으로 모멘텀의 변화를 활용하여 투자 기회를 포착할 수 있습니다.</p>
+</section>
+<section id="industry-momentum">
+<h4>Industry Momentum<a class="headerlink" href="#industry-momentum" title="Permalink to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Industry Momentum</span>
-<span class="c1"># Equal-weighted avg. industry 12-month returns</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Equal-weighted avg. industry 12-month returns</span>
 <span class="n">indmom</span> <span class="o">=</span> <span class="p">(</span><span class="n">close</span><span class="o">.</span><span class="n">pct_change</span><span class="p">(</span><span class="mi">12</span><span class="o">*</span><span class="n">MONTH</span><span class="p">)</span>
           <span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span>
           <span class="o">.</span><span class="n">last</span><span class="p">()</span>
@@ -781,10 +799,12 @@ document.write(`
 <p>구체적으로 설명하면, 먼저 <code class="docutils literal notranslate"><span class="pre">close.pct_change(12*MONTH)</span></code>을 사용하여 최근 12개월간의 주식의 월별 수익률을 계산합니다. <code class="docutils literal notranslate"><span class="pre">.resample('W-FRI').last()</span></code>를 사용하여 이 데이터를 주간 빈도로 리샘플링하고, 각 주의 마지막 영업일의 데이터를 가져옵니다. 그런 다음 ``.stack()<code class="docutils literal notranslate"><span class="pre">을</span> <span class="pre">사용하여</span> <span class="pre">데이터를</span> <span class="pre">재구조화하고,</span> </code>.to_frame(‘close’)`를 사용하여 데이터 프레임을 생성합니다.</p>
 <p>산업 정보가 포함된 메타데이터와 이 데이터 프레임을 조인한 후, <code class="docutils literal notranslate"><span class="pre">.groupby(['date',</span> <span class="pre">'sector']).close.mean()</span></code>을 사용하여 각 날짜와 산업 부문별로 평균 수익률을 계산합니다. 이렇게 계산된 산업 모멘텀 데이터는 주식의 수익률 데이터와 함께 사용되어, 특정 주식의 모멘텀이 그 주식이 속한 산업 부문의 전반적인 모멘텀과 어떻게 관련되어 있는지를 분석하는 데 사용될 수 있습니다.</p>
 <p>이러한 <code class="docutils literal notranslate"><span class="pre">Industry</span> <span class="pre">Momentum</span></code>은 특정 산업 부문의 전반적인 트렌드를 파악하고, 이를 바탕으로 투자 결정을 내리는 데 유용할 수 있습니다.</p>
+</section>
+<section id="recent-max-return">
+<h4>Recent Max Return<a class="headerlink" href="#recent-max-return" title="Permalink to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Recent Max Return</span>
-<span class="c1"># Max daily returns from calendar month t-1</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Max daily returns from calendar month t-1</span>
 <span class="n">maxret</span> <span class="o">=</span> <span class="p">(</span><span class="n">close</span>
            <span class="o">.</span><span class="n">pct_change</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">MONTH</span><span class="p">)</span>
            <span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
@@ -801,10 +821,12 @@ document.write(`
 <p><code class="docutils literal notranslate"><span class="pre">Recent</span> <span class="pre">Max</span> <span class="pre">Return</span></code>은 과거 한 달 동안의 일일 최대 수익률을 계산하여 주식의 투자 가치를 평가하는 방법입니다.</p>
 <p>코드를 따라가보면, <code class="docutils literal notranslate"><span class="pre">close.pct_change(periods=MONTH)</span></code>을 사용하여 일일 수익률을 계산합니다. 그런 다음, <code class="docutils literal notranslate"><span class="pre">.rolling(21).max()</span></code>를 사용하여 이 수익률의 21일 롤링 윈도우 내에서 최대값을 찾습니다. 이는 과거 한 달 동안의 최대 일일 수익률을 식별하는 데 도움이 됩니다. <code class="docutils literal notranslate"><span class="pre">.resample('W-FRI').last()</span></code>는 데이터를 주간 빈도로 리샘플링하고 각 주의 마지막 데이터를 가져옵니다. <code class="docutils literal notranslate"><span class="pre">.stack().to_frame('maxret')</span></code>는 이 데이터를 재구조화하고 데이터 프레임을 생성합니다.</p>
 <p>이러한 최대 일일 수익률 데이터는 주식의 변동성과 리스크를 평가하는 데 사용될 수 있습니다. 높은 최대 일일 수익률은 주식의 높은 변동성을 나타낼 수 있으며, 이러한 정보는 투자자가 리스크 톨러런스와 투자 전략에 맞게 포트폴리오를 구성하는 데 도움이 될 수 있습니다.</p>
+</section>
+<section id="long-term-reversal">
+<h4>Long-Term Reversal<a class="headerlink" href="#long-term-reversal" title="Permalink to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Long-Term Reversal</span>
-<span class="c1"># Cumulative returns months t-36 to t-13.</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cumulative returns months t-36 to t-13.</span>
 <span class="n">mom36m</span> <span class="o">=</span> <span class="p">(</span><span class="n">close</span>
            <span class="o">.</span><span class="n">pct_change</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="mi">24</span><span class="o">*</span><span class="n">MONTH</span><span class="p">)</span>
            <span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">12</span><span class="o">*</span><span class="n">MONTH</span><span class="p">)</span>
@@ -823,10 +845,11 @@ document.write(`
 </section>
 <section id="liquidity-metrics">
 <h3>Liquidity Metrics<a class="headerlink" href="#liquidity-metrics" title="Permalink to this heading">#</a></h3>
+<section id="turnover">
+<h4>Turnover<a class="headerlink" href="#turnover" title="Permalink to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Turnover</span>
-<span class="c1"># Avg. monthly trading volume for most recent three months scaled by number</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Avg. monthly trading volume for most recent three months scaled by number</span>
 <span class="c1"># of shares; we are using the most recent no of shares from yahoo finance</span>
 <span class="n">turn</span> <span class="o">=</span> <span class="p">(</span><span class="n">volume</span>
         <span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">MONTH</span><span class="p">)</span>
@@ -844,10 +867,12 @@ document.write(`
 <p><code class="docutils literal notranslate"><span class="pre">Turnover</span></code> 팩터는 주식의 거래 활동을 측정하는 지표로, 최근 세 달 동안의 평균 월별 거래량을 주식의 총 주식 수로 나누어 계산됩니다. 위의 코드 예시에서는, 먼저 <code class="docutils literal notranslate"><span class="pre">volume.rolling(3*MONTH).mean()</span></code>를 사용하여 최근 3개월 동안의 평균 월별 거래량을 롤링 윈도우를 사용해 계산합니다. 그런 다음, <code class="docutils literal notranslate"><span class="pre">.resample('W-FRI').last()</span></code>를 사용하여 주간 데이터로 리샘플링하고, 각 주의 마지막 거래일의 거래량 데이터를 가져옵니다.</p>
 <p>이후에, <code class="docutils literal notranslate"><span class="pre">.div(metadata.sharesoutstanding)</span></code>를 사용하여 이 거래량을 주식의 총 발행 주식 수로 나누어 주식의 <code class="docutils literal notranslate"><span class="pre">turnover</span></code>를 계산합니다. <code class="docutils literal notranslate"><span class="pre">.stack('ticker').to_frame('turn')</span></code>은 계산된 <code class="docutils literal notranslate"><span class="pre">turnover</span></code> 데이터를 재구조화하고 데이터 프레임으로 변환합니다. 마지막으로, 이 데이터 프레임은 HDF5 파일로 저장됩니다.</p>
 <p>이 <code class="docutils literal notranslate"><span class="pre">Turnover</span></code> 팩터는 주식의 유동성, 거래 활동의 활발함, 및 투자자들의 관심을 측정하는 데 사용될 수 있습니다. 높은 <code class="docutils literal notranslate"><span class="pre">turnover</span></code>는 주식이 자주 거래되고 있음을 나타내며, 이는 해당 주식에 대한 투자자들의 높은 관심 또는 시장의 활발한 거래 활동을 반영할 수 있습니다.</p>
+</section>
+<section id="turnover-volatility">
+<h4>Turnover Volatility<a class="headerlink" href="#turnover-volatility" title="Permalink to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Turnover Volatility</span>
-<span class="c1"># onthly std dev of daily share turnover</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># onthly std dev of daily share turnover</span>
 <span class="n">turn_std</span> <span class="o">=</span> <span class="p">(</span><span class="n">prices</span>
             <span class="o">.</span><span class="n">volume</span>
             <span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="s1">&#39;ticker&#39;</span><span class="p">)</span>
@@ -873,10 +898,12 @@ document.write(`
 <li><p><code class="docutils literal notranslate"><span class="pre">.stack('ticker').to_frame('turn_std')</span></code>로 데이터를 재구조화하고 <code class="docutils literal notranslate"><span class="pre">turn_std</span></code>라는 이름의 데이터 프레임으로 변환합니다.</p></li>
 </ol>
 <p>이 <code class="docutils literal notranslate"><span class="pre">Turnover</span> <span class="pre">Volatility</span></code> 팩터는 주식의 거래 활동의 안정성과 변동성을 평가하는 데 사용됩니다. 높은 거래량 변동성은 시장의 불확실성이나 주식에 대한 투자자의 변덕을 반영할 수 있으며, 낮은 거래량 변동성은 상대적으로 안정적인 투자 환경을 나타낼 수 있습니다. 이러한 정보는 투자자가 리스크를 관리하고 포트폴리오를 최적화하는 데 도움이 될 수 있습니다.</p>
+</section>
+<section id="log-market-equity">
+<h4>Log Market Equity<a class="headerlink" href="#log-market-equity" title="Permalink to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Log Market Equity</span>
-<span class="c1"># Natural log of market cap at end of month t-1</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Natural log of market cap at end of month t-1</span>
 <span class="n">last_price</span> <span class="o">=</span> <span class="n">close</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
 <span class="n">factor</span> <span class="o">=</span> <span class="n">close</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">last_price</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">mvel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">factor</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">marketcap</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="p">())</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;mvel&#39;</span><span class="p">)</span> <span class="c1"># type: ignore</span>
@@ -886,10 +913,12 @@ document.write(`
 </div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">Log</span> <span class="pre">Market</span> <span class="pre">Equity</span></code> 팩터는 각 주식의 시가 총액의 자연 로그를 계산합니다. 주어진 코드에서 <code class="docutils literal notranslate"><span class="pre">close.ffill()</span></code>을 사용하여 결측값을 앞선 값으로 채워넣고, 각 주식의 마지막 가격으로 나누어 주가를 정규화합니다. 그런 다음 <code class="docutils literal notranslate"><span class="pre">metadata.marketcap</span></code>을 사용해 각 주식의 시가 총액을 곱하고, <code class="docutils literal notranslate"><span class="pre">np.log1p()</span></code> 함수를 사용하여 자연 로그를 계산합니다. 결과적으로, 이 팩터는 각 주식의 시가 총액의 크기와 변동을 측정하고, 이를 바탕으로 주식의 상대적인 가치와 리스크를 평가하는 데 사용됩니다.</p>
+</section>
+<section id="krw-volume">
+<h4>KRW Volume<a class="headerlink" href="#krw-volume" title="Permalink to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### KRW Volume</span>
-<span class="c1"># Natural log of trading volume time price per share from month t-2</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Natural log of trading volume time price per share from month t-2</span>
 <span class="n">dv</span> <span class="o">=</span> <span class="n">close</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
 <span class="n">krwvol</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">dv</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
                   <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -904,10 +933,12 @@ document.write(`
 </div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">KRW</span> <span class="pre">Volume</span></code> 팩터는 거래량과 주가를 곱하여 거래 대금을 계산한 뒤, 이 값을 자연 로그로 변환합니다. 코드에서는 <code class="docutils literal notranslate"><span class="pre">close.mul(volume)</span></code>을 사용하여 거래 대금을 계산하고, <code class="docutils literal notranslate"><span class="pre">rolling(21).mean().shift(21)</span></code>을 사용하여 과거 21일 동안의 평균 거래 대금을 계산한 후, 이를 한 달 지연시킵니다. 이 팩터는 주식의 거래 활동과 유동성을 측정하는 데 사용됩니다. 높은 <code class="docutils literal notranslate"><span class="pre">KRW</span> <span class="pre">Volume</span></code> 값은 높은 거래 활동과 유동성을 나타내며, 주식의 가격 변동성이 높을 수 있음을 의미할 수 있습니다.</p>
+</section>
+<section id="amihud-illiquidity">
+<h4>Amihud Illiquidity<a class="headerlink" href="#amihud-illiquidity" title="Permalink to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Amihud Illiquidity</span>
-<span class="c1"># Average of daily (absolute return / dollar volume)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Average of daily (absolute return / dollar volume)</span>
 <span class="n">ill</span> <span class="o">=</span> <span class="p">(</span><span class="n">close</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
        <span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">dv</span><span class="p">)</span>
        <span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
@@ -922,12 +953,14 @@ document.write(`
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">Amihud</span> <span class="pre">Illiquidity</span></code> 팩터는 주식의 일일 절대 수익률을 일일 거래 대금으로 나누어 주식의 유동성을 측정합니다. 주어진 코드에서 <code class="docutils literal notranslate"><span class="pre">close.pct_change().abs().div(dv)</span></code>를 사용하여 각 주식의 절대 수익률을 거래 대금으로 나눕니다. 그런 다음, <code class="docutils literal notranslate"><span class="pre">rolling(21).mean()</span></code>을 사용하여 과거 21일 동안의 평균 유동성을 계산합니다. 낮은 <code class="docutils literal notranslate"><span class="pre">Amihud</span> <span class="pre">Illiquidity</span></code> 값은 주식이 높은 유동성을 가지고 있음을 나타내며, 높은 값은 낮은 유동성, 즉 주식을 매매할 때 높은 비용이 발생할 수 있음을 의미합니다.</p>
 </section>
+</section>
 <section id="risk-measures">
 <h3>Risk Measures<a class="headerlink" href="#risk-measures" title="Permalink to this heading">#</a></h3>
+<section id="return-volatility">
+<h4>Return Volatility<a class="headerlink" href="#return-volatility" title="Permalink to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Return Volatility</span>
-<span class="c1"># Standard dev of daily returns from month t-1.</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Standard dev of daily returns from month t-1.</span>
 <span class="n">retvol</span> <span class="o">=</span> <span class="p">(</span><span class="n">close</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span>
           <span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
           <span class="o">.</span><span class="n">std</span><span class="p">()</span>
@@ -941,10 +974,12 @@ document.write(`
 </div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">Return</span> <span class="pre">Volatility</span></code> 팩터는 과거 한 달 동안의 주식의 일일 수익률의 표준 편차를 계산하여 주식의 가격 변동성을 측정합니다. <code class="docutils literal notranslate"><span class="pre">close.pct_change()</span></code>을 사용하여 일일 수익률을 계산하고, <code class="docutils literal notranslate"><span class="pre">rolling(21).std()</span></code>로 그 21일 동안의 표준 편차를 계산합니다. 높은 변동성 값은 주식의 가격이 더 불안정하고 변동이 크다는 것을 나타내며, 이는 높은 리스크, 또는 투자 기회를 의미할 수 있습니다. 이 팩터는 주로 리스크 관리 및 투자 전략 개발에 사용됩니다.</p>
+</section>
+<section id="market-beta">
+<h4>Market Beta<a class="headerlink" href="#market-beta" title="Permalink to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Market Beta</span>
-<span class="c1"># Estimated market beta from weekly returns and equal weighted market returns</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Estimated market beta from weekly returns and equal weighted market returns</span>
 <span class="c1"># for 3 years ending month t-1 with at least 52 weeks of returns.</span>
 <span class="n">index</span> <span class="o">=</span> <span class="n">close</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;W-FRI&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="p">()</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">get_market_beta</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">index</span><span class="p">):</span>
@@ -964,10 +999,12 @@ document.write(`
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">Market</span> <span class="pre">Beta</span></code> 팩터는 주식의 주간 수익률에 대한 시장 베타를 계산합니다. 시장 베타는 주식의 수익률이 전체 시장의 수익률에 얼마나 민감하게 반응하는지를 측정하는 지표입니다. 코드에서 <code class="docutils literal notranslate"><span class="pre">close.resample('W-FRI').last().pct_change().mean(1)</span></code>를 사용하여 동일 가중치로 시장 수익률을 계산하고, <code class="docutils literal notranslate"><span class="pre">RollingOLS</span></code> 모델을 사용하여 주식의 주간 수익률에 대한 시장 베타를 롤링 윈도우 기반으로 추정합니다.</p>
 <p>높은 베타 값은 주식이 시장 변동에 민감하게 반응한다는 것을 나타내며, 낮은 베타 값은 주식이 시장 변동에 상대적으로 둔감하다는 것을 의미합니다. 베타는 투자자들이 주식 포트폴리오의 시스테믹 리스크를 평가하고, 리스크를 관리하는 데 사용되는 중요한 지표입니다.</p>
+</section>
+<section id="beta-squared">
+<h4>Beta Squared<a class="headerlink" href="#beta-squared" title="Permalink to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Beta Squared</span>
-<span class="c1"># Market beta squared</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Market beta squared</span>
 <span class="n">betasq</span> <span class="o">=</span> <span class="n">beta</span><span class="o">.</span><span class="n">beta</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;betasq&#39;</span><span class="p">)</span>
 <span class="n">betasq</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">results_path</span> <span class="o">/</span> <span class="s1">&#39;autoencoder.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;factor/betasq&#39;</span><span class="p">)</span>
 </pre></div>
@@ -975,10 +1012,12 @@ document.write(`
 </div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">Beta</span> <span class="pre">Squared</span></code> 팩터는 <code class="docutils literal notranslate"><span class="pre">Market</span> <span class="pre">Beta</span></code>의 제곱값을 나타냅니다. <code class="docutils literal notranslate"><span class="pre">Market</span> <span class="pre">Beta</span></code>는 주식의 수익률이 전체 시장의 수익률에 얼마나 민감하게 반응하는지를 측정하는 지표입니다. 따라서, <code class="docutils literal notranslate"><span class="pre">Beta</span> <span class="pre">Squared</span></code>는 이 민감도의 강도를 제곱하여 더욱 확대해서 보여줍니다.</p>
+</section>
+<section id="idiosyncratic-return-volatility">
+<h4>Idiosyncratic return volatility<a class="headerlink" href="#idiosyncratic-return-volatility" title="Permalink to this heading">#</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Idiosyncratic return volatility</span>
-<span class="c1"># Standard dev of a regression of residuals of weekly returns</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Standard dev of a regression of residuals of weekly returns</span>
 <span class="c1"># on the returns of an equal weighted market index returns for the prior three years.</span>
 <span class="k">def</span> <span class="nf">get_ols_residuals</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">index</span><span class="p">):</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
@@ -1003,6 +1042,7 @@ document.write(`
 <li><p><code class="docutils literal notranslate"><span class="pre">x.rolling(3</span> <span class="pre">*</span> <span class="pre">52).apply(get_ols_residuals)</span></code>을 사용하여 주식의 고유한 수익률 변동성을 롤링 윈도우 기반으로 계산합니다. 여기서 <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">*</span> <span class="pre">52</span></code>는 과거 3년간의 주간 데이터를 사용함을 의미합니다.</p></li>
 </ol>
 <p>결과적으로 <code class="docutils literal notranslate"><span class="pre">Idiosyncratic</span> <span class="pre">Return</span> <span class="pre">Volatility</span></code> 팩터는 주식이나 포트폴리오의 고유한 리스크를 평가하는 데 사용됩니다. 이 팩터가 높으면 주식의 가격이 기업 또는 산업 특정 이벤트에 더 민감하게 반응할 가능성이 높아, 리스크가 높아질 수 있습니다. 반대로, 이 팩터가 낮으면 주식의 가격은 상대적으로 안정적일 것입니다. 이 정보는 투자자가 포트폴리오의 고유한 리스크를 관리하고, 다각화 전략을 개발하는 데 도움이 될 수 있습니다.</p>
+</section>
 </section>
 </section>
 </section>
@@ -1075,10 +1115,26 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#short-term-reversal">Short-Term Reversal</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#stock-momentum">Stock Momentum</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#momentum-change">Momentum Change</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#industry-momentum">Industry Momentum</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#recent-max-return">Recent Max Return</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#long-term-reversal">Long-Term Reversal</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#liquidity-metrics">Liquidity Metrics</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#risk-measures">Risk Measures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#liquidity-metrics">Liquidity Metrics</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#turnover">Turnover</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#turnover-volatility">Turnover Volatility</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#log-market-equity">Log Market Equity</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#krw-volume">KRW Volume</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#amihud-illiquidity">Amihud Illiquidity</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#risk-measures">Risk Measures</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#return-volatility">Return Volatility</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#market-beta">Market Beta</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#beta-squared">Beta Squared</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#idiosyncratic-return-volatility">Idiosyncratic return volatility</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
