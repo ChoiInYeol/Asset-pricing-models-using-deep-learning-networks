@@ -1,4 +1,4 @@
-# 딥러닝 네트워크를 활용한 주식 가격 결정 모델 (Asset pricing models using deep learning networks)
+# [딥러닝 네트워크를 활용한 주식 가격 결정 모델 (Asset pricing models using deep learning networks)](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE11473210)
 
 ![Alt text](ppt/%EB%A0%88%ED%8D%BC%EB%9F%B0%EC%8A%A4.png)
 
